@@ -179,27 +179,6 @@ Daily:
 • Scheduled job calls external AI for safe tip  
 • Displays only filtered, positive message
 
-## 🗺️ Main Navigation & Flow Summary
-Create a readme file for this projectPDF2- Project flow in deep english and arabic.pdfMarkdown# Project Autism
-
-**Safe Daily Support Platform for Mothers of Children with Autism**  
-*Mobile-first • Egypt-focused • Bilingual (Arabic/English) • Non-AI Core*
-
----
-
-## 📋 Overview
-
-**Project Autism** is a secure web application designed **exclusively for mothers** to support their autistic children through practical daily routines, emotional encouragement, and a moderated community.
-
-- **No medical claims** — everything is gated behind a strong, non-skippable disclaimer.
-- One child per mother (strict rule).
-- Designed for **quick daily check-ins** (2–5 minutes).
-- Full safety layers: mandatory disclaimer + child profile + content moderation.
-- Core is **non-AI** (backend + frontend). External AI is used only for gentle text insights/tips (mother sees only safe output).
-
-Full deep user flow (English + Arabic) → `docs/2- Project flow in deep english and arabic.pdf`
-
----
 
 ## ✨ Key Features
 
@@ -670,7 +649,7 @@ Markdown# Project Autism - Product Requirements Document (PRD)
 ## 🗃️ 8. Data Model (High-Level) – SQL Server Ready
 
 ```sql
--- Example tables (Entity Framework Code-First)
+-- Example tables (Entity Framework Code-First) 
 Users
 ├── Id (PK)
 ├── Email
