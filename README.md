@@ -1,9 +1,8 @@
-# Project Autism
+#  Autism Support
 
 **AI-Powered Daily Support Web App for Mothers of Children with Autism**  
 
-**Current reference date:** March 2026  
-**Primary users:** Mothers in Egypt (especially Al Mansurah, Dakahlia and similar regions)
+**Primary users:** Mothers in Egypt 
 
 ## Core Principle – Repeated on Every Critical Screen
 
@@ -61,7 +60,7 @@
    → Mother mood picker (1–10 + emoji)
 
 7. Daily Tracking Entry (one per day)
-
+    
 8. View History → calendar/list
 
 9. Upload Video (<5 min) → presigned URL + queue
@@ -105,4 +104,33 @@ Dashboard (daily hub)
 └── Community Feed (moderated)
 ├── Read Approved Posts
 ├── React / Comment (pending)
-└── Create New Post (pending
+└── Create New Post (pending)
+
+
+
+## 4. Technical Stack
+
+| Layer              | Technology                        |
+|--------------------|-----------------------------------|
+| Backend            | ASP.NET Core 8 (C#)               |
+| Database           | Microsoft SQL Server              |
+| Frontend           | JavaScript + React.js / Next.js   |
+| ORM                | Entity Framework Core 8           |
+| Auth               | JWT + Refresh tokens              |
+| File Storage       | Azure Blob Storage                |
+| Background Jobs    | Hangfire                          |
+| AI Integration     | External safe AI API (tips, insights, chatbot)             |
+| Styling            | Tailwind CSS + DaisyUI            |
+| Hosting            | Azure App Service                 |
+
+## 5. AI-Specific Safety & Ethics
+
+- **AI Chatbot** — always shows: "I'm not a doctor or therapist. For serious concerns, contact a professional."
+- Redirects crisis/self-harm talk → emergency resources
+- No storage of sensitive health data in AI prompts
+- Progress insights → positive framing only, no predictions or diagnoses
+- Human moderation layer for community remains primary safety net
+
+Created with love for Aya and all incredible mothers in Egypt ❤️
+
+Last updated: March 2026
