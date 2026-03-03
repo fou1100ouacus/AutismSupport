@@ -14,11 +14,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Programming\\AutismProject\\AutismSupport\\src\\Domain\\Domain.csproj",
+      "projectUniqueName": "D:\\Programming\\AutismTest\\AutismSupport\\src\\Domain\\Domain.csproj",
       "projectName": "Domain",
-      "projectPath": "D:\\Programming\\AutismProject\\AutismSupport\\src\\Domain\\Domain.csproj",
+      "projectPath": "D:\\Programming\\AutismTest\\AutismSupport\\src\\Domain\\Domain.csproj",
       "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-      "outputPath": "D:\\Programming\\AutismProject\\AutismSupport\\src\\Domain\\obj\\",
+      "outputPath": "D:\\Programming\\AutismTest\\AutismSupport\\src\\Domain\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "D:\\windows 11\\s\\New folder\\NuGetPackages"
