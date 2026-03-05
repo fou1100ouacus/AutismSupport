@@ -3,7 +3,7 @@
 **AI-Powered Daily Companion Web App for Mothers of Children with Autism**  
 
 **Primary users** → Mothers in Egypt ❤️
-
+ 
 ### ⚠️ Core Principle – Shown on Every Important Screen
 
 > **This is NOT medical software.**  
