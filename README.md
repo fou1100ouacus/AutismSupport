@@ -24,7 +24,7 @@ A secure web app made **exclusively for mothers** to support their autistic chil
 - 📈 **AI Gentle Progress Insights** – positive patterns from history (safe text only, no diagnosis)
 
 **Daily usage goal** → 2–5 minutes quick check-in
-
+ 
 ## 🛤️ 2. Complete User Flow – Deep Version (From Mother’s View)
 
 ### 🚪 Phase 0 – Anonymous Visitor (Before First Use)
