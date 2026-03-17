@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Programming\\AutismProject\\AutismSupport\\src\\Infrastructure\\Infrastructure.csproj": {}
+    "D:\\Programming\\AutismTest\\AutismSupport\\src\\Infrastructure\\Infrastructure.csproj": {}
   },
   "projects": {
-    "D:\\Programming\\AutismProject\\AutismSupport\\src\\Application\\Application.csproj": {
+    "D:\\Programming\\AutismTest\\AutismSupport\\src\\Application\\Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Programming\\AutismProject\\AutismSupport\\src\\Application\\Application.csproj",
+        "projectUniqueName": "D:\\Programming\\AutismTest\\AutismSupport\\src\\Application\\Application.csproj",
         "projectName": "Application",
-        "projectPath": "D:\\Programming\\AutismProject\\AutismSupport\\src\\Application\\Application.csproj",
+        "projectPath": "D:\\Programming\\AutismTest\\AutismSupport\\src\\Application\\Application.csproj",
         "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-        "outputPath": "D:\\Programming\\AutismProject\\AutismSupport\\src\\Application\\obj\\",
+        "outputPath": "D:\\Programming\\AutismTest\\AutismSupport\\src\\Application\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "D:\\windows 11\\s\\New folder\\NuGetPackages"
@@ -32,8 +32,8 @@
           "net10.0": {
             "targetAlias": "net10.0",
             "projectReferences": {
-              "D:\\Programming\\AutismProject\\AutismSupport\\src\\Domain\\Domain.csproj": {
-                "projectPath": "D:\\Programming\\AutismProject\\AutismSupport\\src\\Domain\\Domain.csproj"
+              "D:\\Programming\\AutismTest\\AutismSupport\\src\\Domain\\Domain.csproj": {
+                "projectPath": "D:\\Programming\\AutismTest\\AutismSupport\\src\\Domain\\Domain.csproj"
               }
             }
           }
@@ -53,6 +53,24 @@
       "frameworks": {
         "net10.0": {
           "targetAlias": "net10.0",
+          "dependencies": {
+            "FluentValidation.DependencyInjectionExtensions": {
+              "target": "Package",
+              "version": "[12.1.1, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[10.0.5, )"
+            },
+            "Microsoft.Extensions.Identity.Core": {
+              "target": "Package",
+              "version": "[10.0.5, )"
+            },
+            "QuestPDF": {
+              "target": "Package",
+              "version": "[2026.2.3, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -69,7 +87,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.103/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.104/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.CSharp": "(,4.7.32767]",
             "Microsoft.VisualBasic": "(,10.4.32767]",
@@ -347,14 +365,14 @@
         }
       }
     },
-    "D:\\Programming\\AutismProject\\AutismSupport\\src\\Domain\\Domain.csproj": {
+    "D:\\Programming\\AutismTest\\AutismSupport\\src\\Domain\\Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Programming\\AutismProject\\AutismSupport\\src\\Domain\\Domain.csproj",
+        "projectUniqueName": "D:\\Programming\\AutismTest\\AutismSupport\\src\\Domain\\Domain.csproj",
         "projectName": "Domain",
-        "projectPath": "D:\\Programming\\AutismProject\\AutismSupport\\src\\Domain\\Domain.csproj",
+        "projectPath": "D:\\Programming\\AutismTest\\AutismSupport\\src\\Domain\\Domain.csproj",
         "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-        "outputPath": "D:\\Programming\\AutismProject\\AutismSupport\\src\\Domain\\obj\\",
+        "outputPath": "D:\\Programming\\AutismTest\\AutismSupport\\src\\Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "D:\\windows 11\\s\\New folder\\NuGetPackages"
@@ -392,6 +410,12 @@
       "frameworks": {
         "net10.0": {
           "targetAlias": "net10.0",
+          "dependencies": {
+            "MediatR": {
+              "target": "Package",
+              "version": "[14.1.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -408,7 +432,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.103/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.104/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.CSharp": "(,4.7.32767]",
             "Microsoft.VisualBasic": "(,10.4.32767]",
@@ -686,14 +710,14 @@
         }
       }
     },
-    "D:\\Programming\\AutismProject\\AutismSupport\\src\\Infrastructure\\Infrastructure.csproj": {
+    "D:\\Programming\\AutismTest\\AutismSupport\\src\\Infrastructure\\Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Programming\\AutismProject\\AutismSupport\\src\\Infrastructure\\Infrastructure.csproj",
+        "projectUniqueName": "D:\\Programming\\AutismTest\\AutismSupport\\src\\Infrastructure\\Infrastructure.csproj",
         "projectName": "Infrastructure",
-        "projectPath": "D:\\Programming\\AutismProject\\AutismSupport\\src\\Infrastructure\\Infrastructure.csproj",
+        "projectPath": "D:\\Programming\\AutismTest\\AutismSupport\\src\\Infrastructure\\Infrastructure.csproj",
         "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-        "outputPath": "D:\\Programming\\AutismProject\\AutismSupport\\src\\Infrastructure\\obj\\",
+        "outputPath": "D:\\Programming\\AutismTest\\AutismSupport\\src\\Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "D:\\windows 11\\s\\New folder\\NuGetPackages"
@@ -714,8 +738,8 @@
           "net10.0": {
             "targetAlias": "net10.0",
             "projectReferences": {
-              "D:\\Programming\\AutismProject\\AutismSupport\\src\\Application\\Application.csproj": {
-                "projectPath": "D:\\Programming\\AutismProject\\AutismSupport\\src\\Application\\Application.csproj"
+              "D:\\Programming\\AutismTest\\AutismSupport\\src\\Application\\Application.csproj": {
+                "projectPath": "D:\\Programming\\AutismTest\\AutismSupport\\src\\Application\\Application.csproj"
               }
             }
           }
@@ -735,6 +759,60 @@
       "frameworks": {
         "net10.0": {
           "targetAlias": "net10.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[10.0.5, )"
+            },
+            "Microsoft.AspNetCore.Authorization": {
+              "target": "Package",
+              "version": "[10.0.5, )"
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[10.0.5, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[10.0.5, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[10.0.5, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[10.0.5, )"
+            },
+            "Microsoft.Extensions.Caching.Hybrid": {
+              "target": "Package",
+              "version": "[10.4.0, )"
+            },
+            "Microsoft.Extensions.Hosting": {
+              "target": "Package",
+              "version": "[10.0.5, )"
+            },
+            "Microsoft.Extensions.Logging": {
+              "target": "Package",
+              "version": "[10.0.5, )"
+            },
+            "Microsoft.Extensions.Options": {
+              "target": "Package",
+              "version": "[10.0.5, )"
+            },
+            "Serilog.AspNetCore": {
+              "target": "Package",
+              "version": "[10.0.0, )"
+            },
+            "Serilog.Sinks.Seq": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -751,7 +829,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.103/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.104/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.CSharp": "(,4.7.32767]",
             "Microsoft.VisualBasic": "(,10.4.32767]",
