@@ -1,7 +1,7 @@
-# SchoolProjectInCleanArchitecture
+# InCleanArchitecture
 
 ## Description
-SchoolProject Using Asp.net Core Web Api Using Clean Architecture Based On Code First
+ Using Asp.net Core Web Api Using Clean Architecture Based On Code First
 
 ### Components
 
