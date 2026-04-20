@@ -3,7 +3,8 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using Core.Behaviors;
 using System.Reflection;
-
+using Service.Abstracts;
+using Service.Implementations;
 namespace Core
 {
     public static class ModuleCoreDependencies
@@ -18,7 +19,6 @@ namespace Core
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
             // 
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
-
             return services;
         }
 

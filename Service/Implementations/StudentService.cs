@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Data.Entities;
 using Data.Enums;
-using Infrustructure.Abstracts;
+using Infrastructure.Abstracts;
 using Service.Abstracts;
 using Serilog;
 

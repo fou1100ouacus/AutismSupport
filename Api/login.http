@@ -1,0 +1,9 @@
+### Login to get new JWT token
+@baseUrl = https://localhost:7089
+
+POST {{baseUrl}}/Api/V1/Authentication/SignIn
+Content-Type: application/x-www-form-urlencoded
+
+userName=aya0&password=1234560@sC!1234560@sC!
+
+### After login, copy the JWT token from the response and update your request2.http file

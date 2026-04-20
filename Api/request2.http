@@ -1,0 +1,19 @@
+### Create Child Profile
+@baseUrl = https://localhost:7089
+
+POST https://localhost:7089/api/ChildProfile
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYXlhMSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiYXlhMSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6Im15b3lhNjI5QGdtYWlsLmNvbSIsIlBob25lTnVtYmVyIjoiMDEwOTg3NjU0MzIiLCJJZCI6IjkiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiZXhwIjoxNzc2NzQ2ODI1LCJpc3MiOiJTY2hvb2xQcm9qZWN0IiwiYXVkIjoiV2ViU2l0ZSJ9.jK_CJtIdMj1EOsHDVTXOdn4g-10VGPTvyLt_xlt1Kog
+
+{
+  "nickname": "Ahmed Ali",
+  "ageInYears": 5,
+  "ageInMonths": 3,
+  "gender": 1,
+  "supportNeedsLevel": 2,
+  "mainDailyChallengesJson": "[\"sensory sensitivities\", \"sleep\", \"communication\"]",
+  "strengthsAndInterests": "Drawing, music, and playing with cars",
+  "prefersVisualSchedules": true,
+  "communicationMethodsJson": "[\"PECS\", \"Speech\", \"Tablet AAC\"]"
+}
+

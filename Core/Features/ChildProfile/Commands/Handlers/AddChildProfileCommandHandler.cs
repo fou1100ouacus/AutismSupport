@@ -1,0 +1,123 @@
+// using Core.Bases;
+// using Core.Features.ChildProfile.Commands;
+// using Core.Features.ChildProfile.Models;
+// using Data.Entities.Child;
+// using Infrastructure.Abstracts;
+// using Infrastructure.Repositories;
+
+// using MediatR;
+// using System.Threading;
+// using System.Threading.Tasks;
+
+// namespace Core.Features.ChildProfile.Handlers
+// {
+//     public class AddChildProfileCommandHandler : IRequestHandler<AddChildProfileCommand, Response<int>>
+//     {
+//         private readonly IChildProfileRepository _childProfileRepository;
+//         private readonly ICurrentUserService _currentUserService;
+
+//         public AddChildProfileCommandHandler(
+//             IChildProfileRepository childProfileRepository,
+//             ICurrentUserService currentUserService)
+//         {
+//             _childProfileRepository = childProfileRepository;
+//             _currentUserService = currentUserService;
+//         }
+
+//         public async Task<Response<int>> Handle(AddChildProfileCommand request, CancellationToken cancellationToken)
+//         {
+//             var currentMotherId = _currentUserService.UserId;
+
+//             // ✅ Business Rule: One child profile per mother
+//             var existingProfile = await _childProfileRepository.GetByMotherIdAsync(currentMotherId);
+//             if (existingProfile != null)
+//             {
+//                 return new Response<int>("You already have a child profile. Only one child profile is allowed per mother.");
+//             }
+
+//             // Map DTO to Entity
+//             var childProfile = new Data.Entities.Child.ChildProfile
+//             {
+//                 MotherId = currentMotherId,
+//                 Nickname = request.Dto.Nickname,
+//                 AgeInYears = request.Dto.AgeInYears,
+//                 AgeInMonths = request.Dto.AgeInMonths,
+//                 Gender = request.Dto.Gender,
+//                 SupportNeedsLevel = request.Dto.SupportNeedsLevel,
+//                 MainDailyChallengesJson = request.Dto.MainDailyChallengesJson,
+//                 StrengthsAndInterests = request.Dto.StrengthsAndInterests,
+//                 PrefersVisualSchedules = request.Dto.PrefersVisualSchedules,
+//                 CommunicationMethodsJson = request.Dto.CommunicationMethodsJson,
+//                 CreatedAt = DateTime.UtcNow,
+//                 LastUpdatedAt = DateTime.UtcNow
+//             };
+
+//             // Save to database
+//             var createdProfile = await _childProfileRepository.AddAsync(childProfile);
+
+//             return new Response<int>(createdProfile.Id, "Child profile created successfully.");
+//         }
+//     }
+// }
+
+using Core.Bases;
+using Core.Features.ChildProfile.Commands;
+using Core.Features.ChildProfile.Models;
+using Data.Entities.Child;
+using Infrastructure.Abstracts;
+using Service.Abstracts;
+using MediatR;
+using System.Threading;
+using System.Threading.Tasks;
+using System;
+using Service.AuthServices.Interfaces;
+namespace Core.Features.ChildProfile.Handlers
+{
+    public class AddChildProfileCommandHandler : IRequestHandler<AddChildProfileCommand, Response<int>>
+    {
+        private readonly IChildService _childProfileService; // استخدام الخدمة بدلاً من الـ Repository
+        private readonly ICurrentUserService _currentUserService;
+
+        public AddChildProfileCommandHandler(
+            IChildService childProfileService, 
+            ICurrentUserService currentUserService)
+        {
+            _childProfileService = childProfileService;
+            _currentUserService = currentUserService;
+        }
+
+        public async Task<Response<int>> Handle(AddChildProfileCommand request, CancellationToken cancellationToken)
+        {
+            // 1. جلب معرف المستخدم الحالي (الأم)
+            var currentMotherId = _currentUserService.GetUserId();
+
+            // 2. تحويل الـ DTO إلى Entity
+            var childProfile = new Data.Entities.Child.ChildProfile
+            {
+                MotherId = currentMotherId,
+                Nickname = request.Dto.Nickname,
+                AgeInYears = request.Dto.AgeInYears,
+                AgeInMonths = request.Dto.AgeInMonths,
+                Gender = request.Dto.Gender,
+                SupportNeedsLevel = request.Dto.SupportNeedsLevel,
+                MainDailyChallengesJson = request.Dto.MainDailyChallengesJson,
+                StrengthsAndInterests = request.Dto.StrengthsAndInterests,
+                PrefersVisualSchedules = request.Dto.PrefersVisualSchedules,
+                CommunicationMethodsJson = request.Dto.CommunicationMethodsJson,
+                CreatedAt = DateTime.UtcNow,
+                LastUpdatedAt = DateTime.UtcNow
+            };
+
+            // 3. استدعاء الخدمة لتنفيذ منطق العمل والحفظ
+            var result = await _childProfileService.AddChildProfileAsync(childProfile);
+
+            // 4. معالجة الرد بناءً على نتيجة الخدمة
+            return result switch
+            {
+                "Success" => new Response<int>(childProfile.Id, "Successful created ."),
+                "Exists" => new Response<int>("لديكِ ملف طفل مسجل بالفعل. مسموح بملف واحد فقط لكل أم."),
+                _ => new Response<int>("حدث خطأ غير متوقع أثناء الحفظ.")
+            };
+        }
+    }
+}

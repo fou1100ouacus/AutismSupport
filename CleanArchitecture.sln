@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api", "Api\Api.csproj", "{C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Data", "Data\Data.csproj", "{5E1B98A8-176B-4F5F-89B5-DF1FB04098AA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrustructure", "Infrustructure\Infrustructure.csproj", "{CD39DCD5-FAA7-4A9A-9742-CE6E26AA3599}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{CD39DCD5-FAA7-4A9A-9742-CE6E26AA3599}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service", "Service\Service.csproj", "{1DBF9A80-1482-4F5E-9F89-6D3C496F0412}"
 EndProject
