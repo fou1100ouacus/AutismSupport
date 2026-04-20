@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Data.Entities.Identity;
-using Infrustructure.Data;
+using Infrastructure.Context;
 using Service.Abstracts;
 
 namespace Service.Implementations

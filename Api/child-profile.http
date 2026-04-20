@@ -1,0 +1,110 @@
+### ChildProfile API Tests
+
+@baseUrl = https://localhost:7089
+@contentType = application/json
+
+### 1. Create Child Profile (POST)
+POST {{baseUrl}}/api/ChildProfile HTTP/1.1
+Content-Type: {{contentType}}
+Authorization: Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYXlhMCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiYXlhMCIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6ImVuZ2F5YW1vaGFtZWQyM0BnbWFpbC5jb20iLCJQaG9uZU51bWJlciI6IjAxMDk4NzY1NDMyIiwiSWQiOiI3IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTc3Njc1MTQwMCwiaXNzIjoiU2Nob29sUHJvamVjdCIsImF1ZCI6IldlYlNpdGUifQ.NdbQ-WNoUxe4vg5Pdw2REVoo8h6y-ZWuob8vcQn4w10
+
+{
+  "nickname": "Test Child",
+  "ageInYears": 5,
+  "ageInMonths": 3,
+  "gender": 1,
+  "supportNeedsLevel": 2,
+  "mainDailyChallengesJson": "[\"Communication\", \"Social interaction\"]",
+  "strengthsAndInterests": "Loves music and animals",
+  "prefersVisualSchedules": true,
+  "communicationMethodsJson": "[\"Visual aids\", \"Sign language\"]"
+}
+
+### 2. Get Child Profile (GET)
+GET {{baseUrl}}/api/ChildProfile/GetProfile HTTP/1.1
+Content-Type: {{contentType}}
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+### 3. Update Child Profile (PUT)
+PUT {{baseUrl}}/api/ChildProfile/UpdateProfile HTTP/1.1
+Content-Type: {{contentType}}
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+{
+  "nickname": "Updated Test Child",
+  "ageInYears": 6,
+  "ageInMonths": 0,
+  "gender": 1,
+  "supportNeedsLevel": 3,
+  "mainDailyChallengesJson": "[\"Communication\", \"Social interaction\", \"Sensory processing\"]",
+  "strengthsAndInterests": "Loves music, animals, and swimming",
+  "prefersVisualSchedules": true,
+  "communicationMethodsJson": "[\"Visual aids\", \"Sign language\", \"Simple words\"]"
+}
+
+### 4. Test with different Gender values
+POST {{baseUrl}}/api/ChildProfile HTTP/1.1
+Content-Type: {{contentType}}
+Authorization: Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYXlhMSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiYXlhMSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6Im15b3lhNjI5QGdtYWlsLmNvbSIsIlBob25lTnVtYmVyIjoiMDEwOTg3NjU0MzIiLCJJZCI6IjkiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiZXhwIjoxNzc2NzUxMTYyLCJpc3MiOiJTY2hvb2xQcm9qZWN0IiwiYXVkIjoiV2ViU2l0ZSJ9.4ul0Pi9ZYg0JAgcUOGebFunoIVEIxCs5WhfJGwjnqDM
+
+{
+  "nickname": "Another Child",
+  "ageInYears": 8,
+  "ageInMonths": 6,
+  "gender": 2,
+  "supportNeedsLevel": 1,
+  "mainDailyChallengesJson": "[]",
+  "strengthsAndInterests": "Very creative",
+  "prefersVisualSchedules": false,
+  "communicationMethodsJson": "[\"Verbal communication\"]"
+}
+
+### 5. Test with minimal data
+POST {{baseUrl}}/api/ChildProfile HTTP/1.1
+Content-Type: {{contentType}}
+Authorization: Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYXlhMSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiYXlhMSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6Im15b3lhNjI5QGdtYWlsLmNvbSIsIlBob25lTnVtYmVyIjoiMDEwOTg3NjU0MzIiLCJJZCI6IjkiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiZXhwIjoxNzc2NzUxMTYyLCJpc3MiOiJTY2hvb2xQcm9qZWN0IiwiYXVkIjoiV2ViU2l0ZSJ9.4ul0Pi9ZYg0JAgcUOGebFunoIVEIxCs5WhfJGwjnqDM
+
+{
+  "nickname": "Minimal Child",
+  "ageInYears": 3,
+  "ageInMonths": 0,
+  "gender": 0,
+  "supportNeedsLevel": 2
+}
+
+### 6. Test invalid data (should fail)
+POST {{baseUrl}}/api/ChildProfile HTTP/1.1
+Content-Type: {{contentType}}
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+{
+  "nickname": "",
+  "ageInYears": -1,
+  "ageInMonths": 15,
+  "gender": 99,
+  "supportNeedsLevel": 10
+}
+
+### 7. Test without authorization (should fail)
+GET {{baseUrl}}/api/ChildProfile/GetProfile HTTP/1.1
+Content-Type: {{contentType}}
+
+### 8. Test with invalid token (should fail)
+GET {{baseUrl}}/api/ChildProfile/GetProfile HTTP/1.1
+Content-Type: {{contentType}}
+Authorization: Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYXlhMSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiYXlhMSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6Im15b3lhNjI5QGdtYWlsLmNvbSIsIlBob25lTnVtYmVyIjoiMDEwOTg3NjU0MzIiLCJJZCI6IjkiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiZXhwIjoxNzc2NzUxMTYyLCJpc3MiOiJTY2hvb2xQcm9qZWN0IiwiYXVkIjoiV2ViU2l0ZSJ9.4ul0Pi9ZYg0JAgcUOGebFunoIVEIxCs5WhfJGwjnqDM
+
+### Notes:
+# Gender enum values (from Data.Entities.Enums.Gender):
+# 0 = PreferNotToSay
+# 1 = Male  
+# 2 = Female
+
+# SupportNeedsLevel enum values (from Data.Entities.Enums.SupportNeedsLevel):
+# 0 = Low
+# 1 = Medium
+# 2 = High
+# 3 = VeryHigh
+
+# Replace YOUR_JWT_TOKEN_HERE with an actual JWT token from authentication
+# You can get this by logging in through your authentication endpoint
