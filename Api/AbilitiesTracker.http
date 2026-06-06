@@ -1,0 +1,45 @@
+### Variables
+@host = https://localhost:7089
+@token = (انسخ الـ Token الخاص بالأم هنا بعد تسجيل الدخول)
+
+### 1. جلب الأقسام (Categories Only)
+# هذا الطلب لا يحتاج Token إذا كنت لم تضع [Authorize] عليه، 
+# لكن يفضل استخدامه دائماً.
+GET {{host}}/api/Abilities/categories
+Accept: application/json
+Authorization: Bearer {{token}}
+
+---
+
+### 2. جلب أسئلة قسم معين (Questions by Category)
+# استبدل رقم 1 بـ ID القسم اللي رجعلك من الطلب الأول
+GET {{host}}/api/Abilities/questions/1
+Accept: application/json
+Authorization: Bearer {{token}}
+
+---
+
+### 3. إرسال إجابات الاختبار (Submit Assessment)
+# لاحظ هنا: لا نرسل ChildId ولا MotherId
+# السيرفر سيعرف الطفل من خلال الـ Token المرفق
+POST {{host}}/api/Abilities/submit-test
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "categoryId": 1,
+  "answers": {
+    "1": 4,
+    "2": 3,
+    "3": 2,
+    "4": 4
+  }
+}
+
+---
+
+### 4. جلب تاريخ تقييمات الطفل (Child History)
+# هذا الطلب سيعيد تاريخ الطفل المرتبط بالأم صاحب الـ Token فقط
+GET {{host}}/api/Abilities/child-history
+Accept: application/json
+Authorization: Bearer {{token}}

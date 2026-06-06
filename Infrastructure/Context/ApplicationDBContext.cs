@@ -4,7 +4,7 @@ using EntityFrameworkCore.EncryptColumn.Util;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Data.Entities;
+using Data.Entities.AbilitiesTracker;
 using Data.Entities.Identity;
 using Data.Entities.Child;
 using System.Reflection;
@@ -23,10 +23,12 @@ namespace Infrastructure.Context
             _encryptionProvider=new GenerateEncryptionProvider("8a4dcaaec64d412380fe4b02193cd26f");
         }
         public DbSet<User> User { get; set; }
-        public DbSet<Student> students { get; set; }
+       // public DbSet<Student> students { get; set; }
        public DbSet<ChildProfile> ChildProfiles { get; set; }
         public DbSet<UserRefreshToken> UserRefreshToken { get; set; }
-
+        public DbSet<AbilityCategory> AbilityCategories { get; set; }
+        public DbSet<AbilityQuestion> AbilityQuestions { get; set; }
+        public DbSet<AbilityTestResult> AbilityTestResults { get; set; }
         #region Views
         // public DbSet<ViewDepartment> ViewDepartment { get; set; }
         #endregion
@@ -34,7 +36,7 @@ namespace Infrastructure.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.ApplyConfiguration(new ChildConfiguration());
+   //         modelBuilder.ApplyConfiguration(new ChildConfiguration());
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             modelBuilder.UseEncryption(_encryptionProvider);
         }

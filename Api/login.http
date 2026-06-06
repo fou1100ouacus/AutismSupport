@@ -1,9 +1,44 @@
 ### Login to get new JWT token
 @baseUrl = https://localhost:7089
-
+@hostname = localhost
+@port = 7089
+@host = http://{{hostname}}:{{port}}
+@contentType = application/json
 POST {{baseUrl}}/Api/V1/Authentication/SignIn
 Content-Type: application/x-www-form-urlencoded
 
-userName=aya0&password=1234560@sC!1234560@sC!
+userName=engaya&password=1234560@sC!
+### Bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiZW5nYXlhIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZWlkZW50aWZpZXIiOiJlbmdheWEiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJlbmdheWFtb2hhbWVkMjNAZ21haWwuY29tIiwiUGhvbmVOdW1iZXIiOiIwMTA5ODc2NTQzMiIsIklkIjoiMTEiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiZXhwIjoxNzgwNzY1NTExLCJpc3MiOiJTY2hvb2xQcm9qZWN0IiwiYXVkIjoiV2ViU2l0ZSJ9.raAAd7-cMi2LCnpyAFW7tJJGBje6B_p-A9UBtzLSUUk
 
-### After login, copy the JWT token from the response and update your request2.http file
+### 1. جلب كافة أقسام القدرات والأسئلة (Categories & Questions)
+# هذا الـ Endpoint سيعود لك بكل الأقسام (تواصل، لعب، إلخ) مع الأسئلة التابعة لكل قسم
+GET {{host}}/api/Abilities/categories
+Accept: {{contentType}}
+
+###
+
+### 2. إرسال إجابات الأم وحفظ نتيجة التقييم (Submit Test)
+# تأكد من تغيير الـ ChildId والـ CategoryId بناءً على البيانات الموجودة في قاعدتك
+# الـ Answers عبارة عن (ID السؤال : القيمة من 0 لـ 4)
+POST {{host}}/api/Abilities/submit-test
+Content-Type: {{contentType}}
+
+{
+    "childId": 1,
+    "categoryId": 1,
+    "answers": {
+        "1": 4,
+        "2": 3,
+        "3": 2,
+        "4": 4,
+        "5": 1
+    }
+}
+
+###
+
+### 3. جلب تاريخ تقييمات الطفل (Child History)
+# استبدل رقم (1) بالـ ID الخاص بالطفل الذي تريد رؤية تقاريره
+GET {{host}}/api/Abilities/child-history/1
+Accept: {{contentType}}
+

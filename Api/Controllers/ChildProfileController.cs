@@ -13,7 +13,7 @@ namespace Api.Controllers
     [Authorize] 
     public class ChildProfileController : AppControllerBase // 
     {
-        [HttpPost]
+        [HttpPost("CreateChildProfile")]
         public async Task<IActionResult> CreateChildProfile([FromBody] CreateChildProfileDto dto)
         {
             // Mediator هنا موجود تلقائياً في AppControllerBase
@@ -34,35 +34,3 @@ namespace Api.Controllers
 }
     }
 }
-// namespace Api.Controllers
-// {
-//     [Route("api/[controller]")]
-//     [ApiController]
-//     [Authorize]   // عشان بس الأم المسجلة تقدر تضيف بروفايل
-//     public class ChildProfileController : ControllerBase
-//     {
-//         private readonly IMediator _mediator;
-
-//         public ChildProfileController(IMediator mediator)
-//         {
-//             _mediator = mediator;
-//         }
-
-//         // POST: api/ChildProfile
-//         [HttpPost]
-//         public async Task<IActionResult> CreateChildProfile([FromBody] CreateChildProfileDto dto)
-//         {
-//             if (dto == null)
-//                 return BadRequest("Invalid data");
-
-//             var command = new AddChildProfileCommand { Dto = dto };
-
-//             var response = await _mediator.Send(command);
-
-//             if (response.Succeeded)
-//                 return Ok(response);
-
-//             return BadRequest(response);
-//         }
-//     }
-// }
