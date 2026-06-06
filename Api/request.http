@@ -1,0 +1,145 @@
+### =============================================
+### School Project - HTTP Requests File
+### =============================================
+
+@baseUrl = https://localhost:7089
+@contentType = application/json
+
+### =============================================
+### 1. Authentication Controller
+### =============================================
+
+### 1.1 Sign In (Login)
+
+# POST {{baseUrl}}/Api/V1/Authentication/SignIn
+# Content-Type: multipart/form-data
+POST {{baseUrl}}/Api/V1/Authentication/SignIn
+Content-Type: application/x-www-form-urlencoded
+
+UserName=aya1&Password=1234560@sC!
+### 1.2 Refresh Token
+POST {{baseUrl}}/Api/V1/Authentication/Refresh-Token
+Content-Type: multipart/form-data
+
+AccessToken=your_access_token_here
+RefreshToken=your_refresh_token_here
+
+### 1.3 Validate Token
+GET {{baseUrl}}/Api/V1/Authentication/Validate-Token?token=eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYXlhMSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiYXlhMSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL2VtYWlsYWRkcmVzcyI6Im15b3lhNjI5QGdtYWlsLmNvbSIsIlBob25lTnVtYmVyIjoiMDEwOTg3NjU0MzIiLCJJZCI6IjkiLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiZXhwIjoxNzc2NTI3NTU2LCJhdWQiOiJXZWJTaXRlIn0.UjmYq8mcjIlztp0aC6yBh-prxHP319-Jicr3crHp_UU
+
+### 1.4 Confirm Email
+GET {{baseUrl}}/Api/V1/Authentication/ConfirmEmail?userId=1&code=your_confirmation_code
+
+### 1.5 Send Reset Password Code
+POST {{baseUrl}}/Api/V1/Authentication/SendResetPasswordCode?email=admin@com
+
+### 1.6 Confirm Reset Password Code
+GET {{baseUrl}}/Api/V1/Authentication/ConfirmResetPasswordCode?email=admin@com&code=your_code
+
+### 1.7 Reset Password
+POST {{baseUrl}}/Api/V1/Authentication/ResetPassword
+Content-Type: multipart/form-data
+
+Email=admin@com
+Password=NewPassword123!
+ConfirmPassword=NewPassword123!
+
+
+
+### 2.1 Create New User (Register)
+POST {{baseUrl}}/api/ApplicationUser/Api/V1/User/Create
+Content-Type: application/json
+
+{
+  "fullName": "aya",
+  "userName": "aya1",
+  "email": "myoya629@gmail.com",
+  "address": "Mansoura, Egypt",
+  "country": "Egypt",
+  "phoneNumber": "01098765432",
+  "password": "1234560@sC!",
+  "confirmPassword": "1234560@sC!"
+}
+
+### 2.2 Get Paginated Users
+GET {{baseUrl}}/api/ApplicationUser/Api/V1/User/Paginated?pageNumber=1&pageSize=10
+
+### 2.3 Get User By ID
+GET {{baseUrl}}/api/ApplicationUser/Api/V1/User/1
+
+### 2.4 Edit User
+PUT {{baseUrl}}/api/ApplicationUser/Api/V1/User/Edit
+Content-Type: application/json
+
+{
+  "id": 1,
+  "fullName": "Ahmed Mohamed Ali Updated",
+  "email": "admin@com",
+  "phoneNumber": "01098765432"
+}
+
+### 2.5 Delete User
+DELETE {{baseUrl}}/api/ApplicationUser/Api/V1/User/1
+
+### 2.6 Change Password
+PUT {{baseUrl}}/api/ApplicationUser/Api/V1/User/Change-Password
+Content-Type: application/json
+
+{
+  "currentPassword": "123456",
+  "newPassword": "Admin@2026!",
+  "confirmNewPassword": "Admin@2026!"
+}
+
+### =============================================
+### 3. Authorization Controller (Roles & Claims)
+### =============================================
+
+### 3.1 Create New Role
+POST {{baseUrl}}/api/Authorization/Create
+Content-Type: multipart/form-data
+
+Name=Teacher
+
+### 3.2 Edit Role
+POST {{baseUrl}}/api/Authorization/Edit
+Content-Type: multipart/form-data
+
+Id=1
+Name=Supervisor
+
+### 3.3 Delete Role
+DELETE {{baseUrl}}/api/Authorization/Delete/1
+
+### 3.4 Get All Roles
+GET {{baseUrl}}/api/Authorization/Role/List
+
+### 3.5 Get Role By Id
+GET {{baseUrl}}/api/Authorization/Role/1
+
+### 3.6 Manage User Roles
+GET {{baseUrl}}/api/Authorization/ManageUserRoles/1
+
+### 3.7 Update User Roles
+PUT {{baseUrl}}/api/Authorization/UpdateUserRoles
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "roles": ["Admin", "Teacher"]
+}
+
+### 3.8 Manage User Claims
+GET {{baseUrl}}/api/Authorization/ManageUserClaims/1
+
+### 3.9 Update User Claims
+PUT {{baseUrl}}/api/Authorization/UpdateUserClaims
+Content-Type: application/json
+
+{
+  "userId": 1,
+  "claims": [
+    { "type": "Permission", "value": "CreateStudent" },
+    { "type": "Permission", "value": "EditStudent" }
+  ]
+}
