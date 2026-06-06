@@ -13,10 +13,10 @@
 
 # POST {{baseUrl}}/Api/V1/Authentication/SignIn
 # Content-Type: multipart/form-data
-POST {{baseUrl}}/Api/V1/Authentication/SignIn
+POST {{baseUrl}}/Api/V1/Authentication/SignIn  HTTP/1.1
 Content-Type: application/x-www-form-urlencoded
 
-UserName=aya1&Password=1234560@sC!
+UserName=aya3&Password=1234560@sC!
 ### 1.2 Refresh Token
 POST {{baseUrl}}/Api/V1/Authentication/Refresh-Token
 Content-Type: multipart/form-data
@@ -52,8 +52,8 @@ Content-Type: application/json
 
 {
   "fullName": "aya",
-  "userName": "aya1",
-  "email": "myoya629@gmail.com",
+  "userName": "engaya",
+  "email": "engayamohamed23@gmail.com",
   "address": "Mansoura, Egypt",
   "country": "Egypt",
   "phoneNumber": "01098765432",

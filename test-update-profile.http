@@ -1,0 +1,65 @@
+### Test UpdateChildProfile Endpoint
+
+@baseUrl = https://localhost:7089
+@contentType = application/json
+
+### 1. First create a profile to update
+POST {{baseUrl}}/api/ChildProfile HTTP/1.1
+Content-Type: {{contentType}}
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+{
+  "nickname": "Test Child for Update",
+  "ageInYears": 5,
+  "ageInMonths": 3,
+  "gender": 1,
+  "supportNeedsLevel": 2,
+  "mainDailyChallengesJson": "[\"Communication\"]",
+  "strengthsAndInterests": "Loves music",
+  "prefersVisualSchedules": true,
+  "communicationMethodsJson": "[\"Visual aids\"]"
+}
+
+### 2. Get the profile to verify it exists
+GET {{baseUrl}}/api/ChildProfile/GetProfile HTTP/1.1
+Content-Type: {{contentType}}
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+### 3. Update the profile
+PUT {{baseUrl}}/api/ChildProfile/UpdateProfile HTTP/1.1
+Content-Type: {{contentType}}
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+{
+  "nickname": "Updated Test Child",
+  "ageInYears": 6,
+  "ageInMonths": 0,
+  "gender": 1,
+  "supportNeedsLevel": 3,
+  "mainDailyChallengesJson": "[\"Communication\", \"Social interaction\"]",
+  "strengthsAndInterests": "Loves music, animals, and swimming",
+  "prefersVisualSchedules": true,
+  "communicationMethodsJson": "[\"Visual aids\", \"Sign language\"]"
+}
+
+### 4. Get the profile again to verify the update
+GET {{baseUrl}}/api/ChildProfile/GetProfile HTTP/1.1
+Content-Type: {{contentType}}
+Authorization: Bearer YOUR_JWT_TOKEN_HERE
+
+### 5. Test update without creating profile first (should fail)
+PUT {{baseUrl}}/api/ChildProfile/UpdateProfile HTTP/1.1
+Content-Type: {{contentType}}
+Authorization: Bearer DIFFERENT_JWT_TOKEN_HERE
+
+{
+  "nickname": "Non-existent Update",
+  "ageInYears": 4,
+  "ageInMonths": 6,
+  "gender": 2,
+  "supportNeedsLevel": 1,
+  "mainDailyChallengesJson": "[]",
+  "strengthsAndInterests": "Test",
+  "prefersVisualSchedules": false,
+  "communicationMethodsJson": "[]"
+}

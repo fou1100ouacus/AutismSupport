@@ -19,7 +19,8 @@ namespace Infrastructure
             services.AddTransient<IChildProfileRepository, ChildProfileRepository>();
          //   services.AddTransient<ICurrentUserService, CurrentUserService>();
             services.AddTransient(typeof(IGenericRepositoryAsync<>), typeof(GenericRepositoryAsync<>));
-
+            services.AddTransient<IAbilityRepository, AbilityRepository>();
+            services.AddTransient<IAbilityTestResultRepository, AbilityTestResultRepository>();
             // //views
 
             // //Procedure

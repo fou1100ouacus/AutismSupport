@@ -40,6 +40,19 @@ namespace Service.Implementations
         {
             return await _childProfileRepository.GetByMotherIdAsync(motherId);
         }
+
+        public async Task<string> UpdateChildProfileAsync(ChildProfile childProfile)
+        {
+            try
+            {
+                await _childProfileRepository.UpdateAsync(childProfile);
+                return "Success";
+            }
+            catch (Exception)
+            {
+                return "Failed";
+            }
+        }
         
     }
 }

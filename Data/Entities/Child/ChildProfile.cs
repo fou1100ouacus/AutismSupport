@@ -2,7 +2,7 @@ using Data.Entities.Identity;
 using Data.Entities.Enums;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-
+using Data.Entities.AbilitiesTracker;
 namespace Data.Entities.Child
 {
     public class ChildProfile
@@ -47,5 +47,7 @@ namespace Data.Entities.Child
         // Helper property (not mapped to database)
         [NotMapped]
         public int TotalAgeInMonths => (AgeInYears * 12) + AgeInMonths;
+
+       public virtual ICollection <AbilityTestResult> AbilityTestResults { get; set; } = new List<AbilityTestResult>();
     }
 }

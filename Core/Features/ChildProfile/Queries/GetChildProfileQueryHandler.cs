@@ -25,14 +25,20 @@ namespace Core.Features.ChildProfile.Queries
         {
             var userId = _currentUserService.GetUserId();
             
+            // Debug: Log the userId being used
+            Console.WriteLine($"DEBUG: Retrieved userId from token: {userId}");
+            
             var childProfile = await _childService.GetProfileByMotherIdAsync(userId);
+            
+            // Debug: Log if profile was found
+            Console.WriteLine($"DEBUG: ChildProfile found for userId {userId}: {childProfile != null}");
             
             if (childProfile == null)
             {
                 return new Response<CreateChildProfileDto>
                 {
                     Succeeded = false,
-                    Message = "Child profile not found"
+                    Message = $"Child profile not found for mother ID: {userId}"
                 };
             }
 

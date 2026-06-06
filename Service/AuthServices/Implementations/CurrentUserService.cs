@@ -23,12 +23,12 @@ namespace Service.AuthServices.Implementations
         #region Functions
         public int GetUserId()
         {
-            var userId = _httpContextAccessor.HttpContext.User.Claims.SingleOrDefault(claim => claim.Type==nameof(UserClaimModel.Id)).Value;
-            if (userId == null)
+            var claim = _httpContextAccessor.HttpContext.User.Claims.SingleOrDefault(claim => claim.Type == "Id");
+            if (claim == null || claim.Value == null)
             {
-                throw new UnauthorizedAccessException();
+                throw new UnauthorizedAccessException("User ID claim not found in token");
             }
-            return int.Parse(userId);
+            return int.Parse(claim.Value);
         }
 
         public async Task<User> GetUserAsync()

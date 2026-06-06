@@ -8,8 +8,8 @@ namespace Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [AllowAnonymous]
-    //[Authorize(Roles = "Admin,User")]
+   // [AllowAnonymous]
+    [Authorize(Roles = "Admin,User")]
     public class ApplicationUserController : AppControllerBase
     {
         [HttpPost(Router.ApplicationUserRouting.Create)]
