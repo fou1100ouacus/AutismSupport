@@ -4,26 +4,36 @@ using Api.Base;
 using Core.Features.ApplicationUser.Commands.Models;
 using Core.Features.ApplicationUser.Queries.Models;
 using Data.AppMetaData;
+using Service.AuthServices.Interfaces;
+
 namespace Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
    // [AllowAnonymous]
-    [Authorize(Roles = "Admin,User")]
     public class ApplicationUserController : AppControllerBase
     {
+        private readonly ICurrentUserService _currentUserService;
+
+        public ApplicationUserController(ICurrentUserService currentUserService)
+        {
+            _currentUserService = currentUserService;
+        }
+
         [HttpPost(Router.ApplicationUserRouting.Create)]
         public async Task<IActionResult> Create([FromBody] AddUserCommand command)
         {
             var response = await Mediator.Send(command);
             return NewResult(response);
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet(Router.ApplicationUserRouting.Paginated)]
         public async Task<IActionResult> Paginated([FromQuery] GetUserPaginationQuery query)
         {
             var response = await Mediator.Send(query);
             return Ok(response);
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet(Router.ApplicationUserRouting.GetByID)]
         public async Task<IActionResult> GetStudentByID([FromRoute] int id)
         {
@@ -32,9 +42,12 @@ namespace Api.Controllers
         [HttpPut(Router.ApplicationUserRouting.Edit)]
         public async Task<IActionResult> Edit([FromBody] EditUserCommand command)
         {
+            // Extract user ID from JWT token instead of receiving it in request body
+            command.Id = _currentUserService.GetUserId();
             var response = await Mediator.Send(command);
             return NewResult(response);
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete(Router.ApplicationUserRouting.Delete)]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
@@ -43,6 +56,8 @@ namespace Api.Controllers
         [HttpPut(Router.ApplicationUserRouting.ChangePassword)]
         public async Task<IActionResult> ChangePassword([FromBody] ChangeUserPasswordCommand command)
         {
+            // Extract user ID from JWT token instead of receiving it in request body
+            command.Id = _currentUserService.GetUserId();
             var response = await Mediator.Send(command);
             return NewResult(response);
         }

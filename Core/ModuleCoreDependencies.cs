@@ -5,6 +5,7 @@ using Core.Behaviors;
 using System.Reflection;
 using Service.Abstracts;
 using Service.Implementations;
+using Core.Bases;
 namespace Core
 {
     public static class ModuleCoreDependencies
@@ -17,8 +18,10 @@ namespace Core
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
             // Get Validators
             services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-            // 
+            //
             services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+            // ResponseHandler
+            services.AddTransient<ResponseHandler>();
             return services;
         }
 

@@ -1,10 +1,13 @@
 ﻿using MediatR;
 using Core.Bases;
+using System.Text.Json.Serialization;
 
 namespace Core.Features.ApplicationUser.Commands.Models
 {
     public class EditUserCommand : IRequest<Response<string>>
     {
+        // Id is set from token, not sent from client
+        [JsonIgnore]
         public int Id { get; set; }
         public string FullName { get; set; }
         public string UserName { get; set; }

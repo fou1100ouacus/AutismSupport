@@ -19,6 +19,13 @@ namespace Service
             services.AddTransient<ICurrentUserService, CurrentUserService>();
             services.AddTransient<IChildService, ChildService>();
              services.AddScoped<IAbilityService, AbilityService>();
+
+            // Community services
+            services.AddTransient<ICommunityPostService, CommunityPostService>();
+            services.AddTransient<ICommunityCommentService, CommunityCommentService>();
+            services.AddTransient<ICommunityReactionService, CommunityReactionService>();
+            services.AddTransient<ICommunityReportService, CommunityReportService>();
+
             return services;
         }
     }

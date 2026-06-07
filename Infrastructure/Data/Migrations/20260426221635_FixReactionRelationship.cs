@@ -10,6 +10,10 @@ namespace Infrastructure.Data.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropIndex(
+                name: "IX_CommunityReactions_UserId_PostId_TargetType",
+                table: "CommunityReactions");
+
             migrationBuilder.AlterColumn<int>(
                 name: "PostId",
                 table: "CommunityReactions",
@@ -25,6 +29,13 @@ namespace Infrastructure.Data.Migrations
                 nullable: true,
                 oldClrType: typeof(int),
                 oldType: "int");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CommunityReactions_UserId_PostId_TargetType",
+                table: "CommunityReactions",
+                columns: new[] { "UserId", "PostId", "TargetType" },
+                unique: true,
+                filter: "[PostId] IS NOT NULL");
         }
 
         /// <inheritdoc />

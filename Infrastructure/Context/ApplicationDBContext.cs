@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Data.Entities.AbilitiesTracker;
 using Data.Entities.Identity;
 using Data.Entities.Child;
+using Data.Entities.Community;
+
 using System.Reflection;
 using Infrastructure.Configurations;
 namespace Infrastructure.Context
@@ -29,14 +31,27 @@ namespace Infrastructure.Context
         public DbSet<AbilityCategory> AbilityCategories { get; set; }
         public DbSet<AbilityQuestion> AbilityQuestions { get; set; }
         public DbSet<AbilityTestResult> AbilityTestResults { get; set; }
+     
+     
+     
+        // Community
+        public DbSet<CommunityPost> CommunityPosts { get; set; }
+        public DbSet<CommunityComment> CommunityComments { get; set; }
+        public DbSet<CommunityReaction> CommunityReactions { get; set; }
+        public DbSet<CommunityReport> CommunityReports { get; set; }
+     
+     
         #region Views
-        // public DbSet<ViewDepartment> ViewDepartment { get; set; }
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
    //         modelBuilder.ApplyConfiguration(new ChildConfiguration());
+          modelBuilder.ApplyConfiguration(new CommunityPostConfiguration());
+            modelBuilder.ApplyConfiguration(new CommunityCommentConfiguration());
+            modelBuilder.ApplyConfiguration(new CommunityReactionConfiguration());
+            modelBuilder.ApplyConfiguration(new CommunityReportConfiguration());
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
             modelBuilder.UseEncryption(_encryptionProvider);
         }

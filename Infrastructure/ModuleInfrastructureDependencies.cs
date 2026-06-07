@@ -27,6 +27,12 @@ namespace Infrastructure
 
             //functions
 
+            // Community repositories
+            services.AddTransient<ICommunityPostRepository, CommunityPostRepository>();
+            services.AddTransient<ICommunityCommentRepository, CommunityCommentRepository>();
+            services.AddTransient<ICommunityReactionRepository, CommunityReactionRepository>();
+            services.AddTransient<ICommunityReportRepository, CommunityReportRepository>();
+
             return services;
         }
     }
