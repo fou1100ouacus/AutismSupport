@@ -1,125 +1,50 @@
-using Infrastructure.Abstracts;
-using Service.Abstracts;
+
 using Data.Entities.AbilitiesTracker;
-using System.Linq;
+using Infrastructure.Abstracts; 
+using Service.Abstracts;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
 namespace Service.Implementations
 {
     public class AbilityService : IAbilityService
     {
-        private readonly IAbilityRepository _abilityRepository;
-        private readonly IAbilityTestResultRepository _resultRepository;
-        private readonly IChildProfileRepository _childRepository;
+        private readonly IAbilityQuestionRepository _questionRepository;
+        private readonly IAbilityTestResultRepository _testResultRepository;
 
-        public AbilityService(IAbilityRepository abilityRepository, 
-                              IAbilityTestResultRepository resultRepository,
-                              IChildProfileRepository childRepository)
+        public AbilityService(
+            IAbilityQuestionRepository questionRepository,
+            IAbilityTestResultRepository testResultRepository)
         {
-            _abilityRepository = abilityRepository;
-            _resultRepository = resultRepository;
-            _childRepository = childRepository;
-        }
-   
-        public async Task<List<AbilityCategory>> GetAbilitiesCategoriesOnlyAsync()
-        {
-            return await _abilityRepository.GetOnlyCategoriesAsync();
+            _questionRepository = questionRepository;
+            _testResultRepository = testResultRepository;
         }
 
-            public async Task<List<AbilityQuestion>> GetQuestionsAsync(int categoryId)
-            {
-                return await _abilityRepository.GetQuestionsByCategoryIdAsync(categoryId);
-            }
-        public async Task<string> AddTestResultAsync(int childId, int categoryId, Dictionary<int, int> answers)
+        // 🔥 التعديل الاحترافي باستخدام ميزات الـ Generic Repository
+        public async Task<IEnumerable<AbilityQuestion>> GetAllQuestionsWithCategoriesAsync()
         {
-            // 1. حساب المجموع
-            int totalScore = answers.Values.Sum();
-
-            // 2. تحديد المستوى (منطق تجريبي بناءً على مجموع النقاط)
-            string level = totalScore switch
-            {
-                >= 25 => "متقدم (High)",
-                >= 15 => "متوسط (Medium)",
-                _ => "يحتاج تطوير (Low)"
-            };
-
-            // 3. بناء الكيان
-            var testResult = new AbilityTestResult
-            {
-                ChildId = childId,
-                CategoryId = categoryId,
-                TotalScore = totalScore,
-                Level = level,
-                TestDate = DateTime.UtcNow,
-                DetailedAnswersJson = System.Text.Json.JsonSerializer.Serialize(answers)
-            };
-
-            // 4. الحفظ
-            await _resultRepository.AddAsync(testResult);
-            
-            return "Success";
+            // بنجيب جدول الأسئلة ونعمل Include للـ Category عشان الحسبة جوه الـ Handler تشتغل صح
+            return await _questionRepository.GetTableNoTracking() // أو اسم الميثود اللي بترجع IQueryable عندك
+                                            .Include(q => q.Category)
+                                            .ToListAsync();
         }
 
-      
-        public async Task<List<AbilityTestResultDto>> GetHistoryByMotherAsync(int motherId)
+        public async Task<bool> SaveTestResultAsync(AbilityTestResult testResult)
         {
-            // 1. البحث عن بروفايل الطفل باستخدام معرف الأم القادم من الـ Token
-            var child = await _childRepository.GetByMotherIdAsync(motherId);
-            
-            if (child == null) return new List<AbilityTestResultDto>();
-
-            // 2. جلب النتائج من الـ Repository
-            var results = await _resultRepository.GetResultsByChildIdAsync(child.Id);
-
-            // 3. التحويل لـ DTO لمنع الـ Cycle Error ولتنسيق البيانات للموبايل
-            return results.Select(r => new AbilityTestResultDto
-            {
-                Id = r.Id,
-                TotalScore = r.TotalScore,
-                Level = r.Level,
-                TestDate = r.TestDate,
-    //            CategoryNameAr = r.Category?.NameAr ?? "غير معروف",
-                CategoryNameEn = r.Category?.NameEn ?? "Unknown"
-            }).ToList();
+            // الـ AddAsync موروثة وجاهزة من الـ Generic Repo
+            await _testResultRepository.AddAsync(testResult);
+            return true;
         }
 
-         public async Task<string> AddTestResultByMotherAsync(int motherId, int categoryId, Dictionary<int, int> answers)
-        {
-            // 1. البحث عن الطفل المرتبط بالأم آلياً
-            var child = await _childRepository.GetByMotherIdAsync(motherId);
-            if (child == null) return "ChildNotFound";
-
-            // 2. حساب المجموع الكلي
-            int totalScore = answers.Values.Sum();
-
-            // 3. تحديد المستوى (منطق حسابي)
-            string level = totalScore switch
-            {
-                >= 20 => "متقدم (High)",
-                >= 12 => "متوسط (Medium)",
-                _ => "يحتاج اهتمام (Low)"
-            };
-
-            // 4. بناء كائن النتيجة
-            var testResult = new AbilityTestResult
-            {
-                ChildId = child.Id,
-                CategoryId = categoryId,
-                TotalScore = totalScore,
-                Level = level,
-                TestDate = DateTime.UtcNow,
-                // تخزين الإجابات كتفاصيل JSON إذا أردت الرجوع لها لاحقاً
-                DetailedAnswersJson = System.Text.Json.JsonSerializer.Serialize(answers)
-            };
-
-            await _resultRepository.AddAsync(testResult);
-            return "Success";
-        }
-
-
-
-
-
-
-
-
-    }
+        public async Task<List<AbilityCategory>> GetAbilitiesCategoriesOnlyAsync() => throw new System.NotImplementedException();
+        public async Task<List<AbilityQuestion>> GetQuestionsAsync(int categoryId) => throw new System.NotImplementedException();
+public async Task<List<AbilityTestResult>> GetHistoryByMotherAsync(int childId)
+{
+    // بنجيب جدول النتائج وبنفلتر بالـ ChildId وبنرتبهم من الأحدث للأقدم
+    return await _testResultRepository.GetTableNoTracking()
+                                      .Where(r => r.ChildId == childId)
+                                      .OrderByDescending(r => r.TestDate)
+                                      .ToListAsync();
+}    }
 }

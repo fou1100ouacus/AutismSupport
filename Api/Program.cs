@@ -214,15 +214,23 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
-if (app.Environment.IsDevelopment())
+// if (app.Environment.IsDevelopment())
 
+// {
+
+//     app.UseSwagger();
+
+//     app.UseSwaggerUI();
+
+// }
+
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-
-    app.UseSwagger();
-
-    app.UseSwaggerUI();
-
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Autism Project API V1");
+    // السطر القادم اختياري: يجعل الـ Swagger يفتح مباشرة بمجرد دخول الرابط الرئيسي بدون كتابة /swagger
+    c.RoutePrefix = string.Empty; 
+});
 
 
 
@@ -260,9 +268,10 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+app.Run($"http://0.0.0.0:{port}");
 
-
-app.Run();
+// app.Run();
 
 
 

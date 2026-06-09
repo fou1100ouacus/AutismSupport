@@ -18,6 +18,8 @@ namespace Service
             services.AddTransient<IFileService, FileService>();
             services.AddTransient<ICurrentUserService, CurrentUserService>();
             services.AddTransient<IChildService, ChildService>();
+
+          
              services.AddScoped<IAbilityService, AbilityService>();
 
             // Community services
