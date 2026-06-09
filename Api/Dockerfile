@@ -21,9 +21,9 @@
 # FROM base AS final
 # WORKDIR /app
 # COPY --from=publish /app/publish .
-# ENTRYPOINT ["dotnet", "Api.dll"]
+# ENTRYPOINT ["dotnet", "Api.dll"]d
 
-
+  
 # 1. بيئة التشغيل المستهدفة بدوت نت 10
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 WORKDIR /app
