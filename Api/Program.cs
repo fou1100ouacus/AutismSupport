@@ -72,7 +72,7 @@ builder.Services.AddDbContext<ApplicationDBContext>(option =>
     // إذا كان التطبيق يعمل أونلاين على Railway
     if (builder.Environment.IsProduction())
     {
-        option.UseSqlite("Data Source=autism_support.db");
+        option.UseSqlite("Data Source=TestDB.db");
     }
     else
     {
