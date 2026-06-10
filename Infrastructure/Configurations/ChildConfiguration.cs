@@ -45,14 +45,14 @@ namespace Infrastructure.Configurations
                    .IsRequired();
 
             // JSON Columns Configuration (مهم جداً)
-            builder.Property(c => c.MainDailyChallengesJson)
-                   .HasColumnType("nvarchar(max)");
+            builder.Property(c => c.MainDailyChallengesJson);
+                 //  .HasColumnType("nvarchar(max)");
 
-            builder.Property(c => c.CommunicationMethodsJson)
-                   .HasColumnType("nvarchar(max)");
+            builder.Property(c => c.CommunicationMethodsJson);
+                 //  .HasColumnType("nvarchar(max)");
 
-            builder.Property(c => c.StrengthsAndInterests)
-                   .HasColumnType("nvarchar(max)");
+            builder.Property(c => c.StrengthsAndInterests);
+                   //.HasColumnType("nvarchar(max)");
 
             // Boolean
             builder.Property(c => c.PrefersVisualSchedules)
