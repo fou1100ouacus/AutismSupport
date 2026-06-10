@@ -279,20 +279,43 @@ app.UseAuthorization();
 
 
 app.MapControllers();
-// امسح أي كود قديم متبقي للـ Migration في آخر الملف، وحط ده مكانه بالظبط:
+
+
+// في نهاية ملف Program.cs قبل app.Run()
 if (app.Environment.IsProduction())
 {
     using (var scope = app.Services.CreateScope())
     {
         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDBContext>();
         
-        // الدالة دي بتمسح أي ملف داتابيز قديم متكش أونلاين عشان تبدأ على نظيف
-        await dbContext.Database.EnsureDeletedAsync();
-        
-        // إنشاء الداتابيز فوراً بناءً على الـ Models بدون المرور بالـ Migrations القديمة
+        // 1. إنشاء الداتابيز أونلاين في حالة عدم وجودها
         await dbContext.Database.EnsureCreatedAsync(); 
+        
+        // 2. 👇 مناداة دالة الفرش التلقائي للبيانات
+        await Infrastructure.Seeder.ApplicationDataSeeder.SeedDataAsync(dbContext);
     }
 }
 
+
+
 var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
 app.Run($"http://0.0.0.0:{port}");
+
+
+// امسح أي كود قديم متبقي للـ Migration في آخر الملف، وحط ده مكانه بالظبط:
+// if (app.Environment.IsProduction())
+// {
+//     using (var scope = app.Services.CreateScope())
+//     {
+//         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDBContext>();
+        
+//         // الدالة دي بتمسح أي ملف داتابيز قديم متكش أونلاين عشان تبدأ على نظيف
+//         await dbContext.Database.EnsureDeletedAsync();
+        
+//         // إنشاء الداتابيز فوراً بناءً على الـ Models بدون المرور بالـ Migrations القديمة
+//         await dbContext.Database.EnsureCreatedAsync(); 
+//     }
+// }
+
+// var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+// app.Run($"http://0.0.0.0:{port}");
