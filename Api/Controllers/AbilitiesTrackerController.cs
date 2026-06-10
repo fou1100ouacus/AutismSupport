@@ -1,77 +1,34 @@
 using Microsoft.AspNetCore.Mvc;
-using Service.Abstracts;
-using Core.AbilitiesTracker;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
-namespace Api.Controllers
+using System.Threading.Tasks;
+using Api.Base; 
+using Core.Features.AbilitiesTracker.Commands; 
+using Core.Features.AbilitiesTracker; 
+
+namespace Api.Controllers 
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class AbilitiesController : ControllerBase
+    public class AbilitiesTrackerController : AppControllerBase
     {
-        private readonly IAbilityService _abilityService;
-
-        public AbilitiesController(IAbilityService abilityService)
+        // 1️⃣ Endpoint: جلب قائمة الأسئلة بالكامل للـ Mobile
+        [HttpGet("questions")]
+        public async Task<IActionResult> GetQuestions()
         {
-            _abilityService = abilityService;
-        }
-        [HttpGet("categoriesOnly")]
-        public async Task<IActionResult> GetCategoriesOnly()
-        {
-            var categories = await _abilityService.GetAbilitiesCategoriesOnlyAsync();
-            return Ok(categories);
-        }
-        // جلب أسئلة قسم معين عند ضغط الأم عليه
-        [HttpGet("questions/{categoryId}")]
-        public async Task<IActionResult> GetQuestions(int categoryId)
-        {
-            var questions = await _abilityService.GetQuestionsAsync(categoryId);
-            
-            if (questions == null || !questions.Any())
-                return NotFound("لا توجد أسئلة لهذا القسم حالياً");
-
-            return Ok(questions);
-        }
-      
-
-        [HttpGet("child-history")]
-        [Authorize] // تأكد من وجود صلاحية الوصول
-        public async Task<IActionResult> GetChildHistory()
-        {
-            // 1. استخراج الـ UserId الخاص بالأم من الـ Token
-            // استخدام الـ Id claim المخصص الذي يحتوي على المعرف الرقمي
-            var motherIdStr = User.FindFirstValue("Id");
-            if (string.IsNullOrEmpty(motherIdStr)) return Unauthorized();
-
-            int motherId = int.Parse(motherIdStr);
-
-            // 2. من خلال الـ Service، سنجلب التاريخ بناءً على الأم
-            var history = await _abilityService.GetHistoryByMotherAsync(motherId);
-
-            return Ok(history);
+            var response = await Mediator.Send(new GetAbilityQuestionsQuery());
+            return NewResult(response); // بتغلف الـ Response تلقائياً بناءً على الـ StatusCode
         }
 
-
-        [HttpPost("submit-test")]
-        [Authorize]
-        public async Task<IActionResult> SubmitTest([FromBody] SubmitTestRequest request)
+       [HttpPost("submit-test")]
+        public async Task<IActionResult> SubmitTest([FromBody] SubmitTestRequestDto dto)
         {
-            // استخراج معرف الأم من التوكن (الـ Claim الذي تستخدمه هو "Id")
-            var motherIdStr = User.FindFirstValue("Id");
-            if (string.IsNullOrEmpty(motherIdStr)) return Unauthorized();
-
-            var result = await _abilityService.AddTestResultByMotherAsync(
-                int.Parse(motherIdStr), 
-                request.CategoryId, 
-                request.Answers);
-
-            if (result == "ChildNotFound")
-                return BadRequest("لم يتم العثور على بروفايل طفل مرتبط بهذا الحساب.");
-
-            return Ok(new { message = "تم حفظ التقييم بنجاح ونسبته لطفلك آلياً" });
+            var response = await Mediator.Send(new SubmitTestCommand { Dto = dto });
+            return NewResult(response);
         }
 
-
-
+        // 3️⃣ Endpoint: Get Test History
+        [HttpGet("history/{childId:int}")]
+        public async Task<IActionResult> GetTestHistory([FromRoute] int childId)
+        {
+            var response = await Mediator.Send(new GetAbilityTestHistoryQuery { ChildId = childId });
+            return NewResult(response);
+        }
     }
 }

@@ -22,7 +22,7 @@ namespace Infrastructure
             services.AddTransient<IAbilityRepository, AbilityRepository>();
             services.AddTransient<IAbilityTestResultRepository, AbilityTestResultRepository>();
             // //views
-
+  services.AddTransient<IAbilityQuestionRepository, AbilityQuestionRepository>();
             // //Procedure
 
             //functions

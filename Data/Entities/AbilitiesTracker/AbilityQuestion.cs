@@ -15,6 +15,7 @@ namespace Data.Entities.AbilitiesTracker
         
         [ForeignKey(nameof(Category))]
         public int CategoryId { get; set; }
+        public bool IsPositiveSkill { get; set; } = true;
         public virtual AbilityCategory Category { get; set; } = null!;
     }
 }
