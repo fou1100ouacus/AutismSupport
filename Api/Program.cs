@@ -58,15 +58,28 @@ builder.Services.AddSwaggerGen();
 
 //dotnet ef migrations add InitialIdentity --context ApplicationDBContext --output-dir Data\Migrations
 
+// builder.Services.AddDbContext<ApplicationDBContext>(option =>
+
+// {
+
+//     option.UseSqlServer(builder.Configuration.GetConnectionString("dbcontext"));
+
+// });
+
+///////
 builder.Services.AddDbContext<ApplicationDBContext>(option =>
-
 {
-
-    option.UseSqlServer(builder.Configuration.GetConnectionString("dbcontext"));
-
+    // إذا كان التطبيق يعمل أونلاين على Railway
+    if (builder.Environment.IsProduction())
+    {
+        option.UseSqlite("Data Source=autism_support.db");
+    }
+    else
+    {
+        // محلياً يستمر السيرفر في استخدام SQL Server الخاص بجهازك
+        option.UseSqlServer(builder.Configuration.GetConnectionString("dbcontext"));
+    }
 });
-
-
 
 #region Dependency injections
 
@@ -265,14 +278,17 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 
-
 app.MapControllers();
+
+// 👇 اضف هذا الجزء هنا بالظبط لقراءة وتحديث جداول الداتابيز تلقائياً أونلاين
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDBContext>();
+    await dbContext.Database.MigrateAsync();
+}
 
 var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
 app.Run($"http://0.0.0.0:{port}");
-
-// app.Run();
-
 
 
 

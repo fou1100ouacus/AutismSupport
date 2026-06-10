@@ -23,12 +23,12 @@ namespace Api.Controllers
             return NewResult(response);
         }
 
-        // 3️⃣ Endpoint: Get Test History
-        [HttpGet("history/{childId:int}")]
-        public async Task<IActionResult> GetTestHistory([FromRoute] int childId)
-        {
-            var response = await Mediator.Send(new GetAbilityTestHistoryQuery { ChildId = childId });
-            return NewResult(response);
-        }
+        // // 3️⃣ Endpoint: Get Test History
+        // [HttpGet("history/{childId:int}")]
+        // public async Task<IActionResult> GetTestHistory([FromRoute] int childId)
+        // {
+        //     var response = await Mediator.Send(new GetAbilityTestHistoryQuery { ChildId = childId });
+        //     return NewResult(response);
+        // }
     }
 }
