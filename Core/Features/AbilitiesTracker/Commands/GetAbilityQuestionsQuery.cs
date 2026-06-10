@@ -26,13 +26,13 @@ namespace Core.Features.AbilitiesTracker.Commands
 
         public string QuestionTextEn { get; set; } = string.Empty;
 
-        public string QuestionTextAr { get; set; } = string.Empty;
+     //   public string QuestionTextAr { get; set; } = string.Empty;
 
-        public int CategoryId { get; set; }
+    //    public int CategoryId { get; set; }
 
         public string CategoryNameEn { get; set; } = string.Empty;
 
-        public string CategoryNameAr { get; set; } = string.Empty;
+  //      public string CategoryNameAr { get; set; } = string.Empty;
 
     }
 

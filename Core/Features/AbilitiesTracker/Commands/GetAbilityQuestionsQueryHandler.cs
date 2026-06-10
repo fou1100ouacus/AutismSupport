@@ -25,7 +25,7 @@ namespace Core.Features.AbilitiesTracker.Commands
             {
                 Id = q.Id,
                 QuestionTextEn = q.QuestionTextEn,
-                CategoryId = q.CategoryId,
+           //     CategoryId = q.CategoryId,
                 CategoryNameEn = q.Category?.NameEn ?? string.Empty
             }).ToList();
 
