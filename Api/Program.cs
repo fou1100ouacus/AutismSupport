@@ -121,9 +121,9 @@ builder.Services.Configure<RequestLocalizationOptions>(options =>
 
             new CultureInfo("de-DE"),
 
-            new CultureInfo("fr-FR"),
+        //    new CultureInfo("fr-FR"),
 
-            new CultureInfo("ar-EG")
+         //   new CultureInfo("ar-EG")
 
     };
 
@@ -280,17 +280,19 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// 👇 اضف هذا الجزء هنا بالظبط لقراءة وتحديث جداول الداتابيز تلقائياً أونلاين
-using (var scope = app.Services.CreateScope())
+// 👇 الكود مكانه الصح هنا في النهاية خالص بعد ما الـ app اتعمله Build
+if (app.Environment.IsProduction())
 {
-    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDBContext>();
-    await dbContext.Database.MigrateAsync();
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDBContext>();
+        await dbContext.Database.EnsureCreatedAsync(); 
+    }
 }
 
+// تشغيل البورت الديناميكي الخاص بـ Railway
 var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
 app.Run($"http://0.0.0.0:{port}");
-
-
 
 
 // select * from [dbo].[AspNetUserLogins]
