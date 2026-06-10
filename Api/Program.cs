@@ -279,37 +279,20 @@ app.UseAuthorization();
 
 
 app.MapControllers();
-
-// 👇 الكود مكانه الصح هنا في النهاية خالص بعد ما الـ app اتعمله Build
+// امسح أي كود قديم متبقي للـ Migration في آخر الملف، وحط ده مكانه بالظبط:
 if (app.Environment.IsProduction())
 {
     using (var scope = app.Services.CreateScope())
     {
         var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDBContext>();
+        
+        // الدالة دي بتمسح أي ملف داتابيز قديم متكش أونلاين عشان تبدأ على نظيف
+        await dbContext.Database.EnsureDeletedAsync();
+        
+        // إنشاء الداتابيز فوراً بناءً على الـ Models بدون المرور بالـ Migrations القديمة
         await dbContext.Database.EnsureCreatedAsync(); 
     }
 }
 
-// تشغيل البورت الديناميكي الخاص بـ Railway
 var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
 app.Run($"http://0.0.0.0:{port}");
-
-
-// select * from [dbo].[AspNetUserLogins]
-
-// select * from [dbo].[AspNetUserTokens]
-
-// select * from [dbo].[UserRefreshToken]
-
-// select * from [dbo].[AspNetRoles]
-
-// select * from [dbo].[AspNetUsers]
-
-// delete [AspNetUsers] where Id=7
-//1234560@sC!
-
-
-// --eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4zIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZWlkZW50aWZpZXIiOiJhZG1pbjMiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJteW95YTYyOUBnbWFpbC5jb20iLCJQaG9uZU51bWJlciI6IjAxMDk4NzY1NDMyIiwiSWQiOiI4IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTc3NTAyMDYyMywiaXNzIjoiU2Nob29sUHJvamVjdCIsImF1ZCI6IldlYlNpdGUifQ.FgvWcNjV0pIfP93tRYmU4y2olT3cTpHgY33zoI9g9AU
-
-// --eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4zIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZWlkZW50aWZpZXIiOiJhZG1pbjMiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJteW95YTYyOUBnbWFpbC5jb20iLCJQaG9uZU51bWJlciI6IjAxMDk4NzY1NDMyIiwiSWQiOiI4IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTc3NTAyMDYyMywiaXNzIjoiU2Nob29sUHJvamVjdCIsImF1ZCI6IldlYlNpdGUifQ.FgvWcNjV0pIfP93tRYmU4y2olT3cTpHgY33zoI9g9AU
-
