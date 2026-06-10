@@ -292,7 +292,9 @@ if (app.Environment.IsProduction())
         await dbContext.Database.EnsureCreatedAsync(); 
         
         // 2. 👇 مناداة دالة الفرش التلقائي للبيانات
-        await Infrastructure.Seeder.ApplicationDataSeeder.SeedDataAsync(dbContext);
+    //    await Infrastructure.Seeder.ApplicationDataSeeder.SeedDataAsync(dbContext);
+      await Infrastructure.Seeder.ApplicationDataSeeder.SeedAsync(scope.ServiceProvider.GetRequiredService<UserManager<User>>());
+
     }
 }
 

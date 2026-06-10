@@ -3,6 +3,10 @@
 using Data.Entities.AbilitiesTracker; 
 using Infrastructure.Data; 
 using Infrastructure.Context;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Data.Entities.Identity;
+
 namespace Infrastructure.Seeder
 {
     public static class ApplicationDataSeeder
@@ -106,5 +110,47 @@ namespace Infrastructure.Seeder
                 }
             }
         }
+   
+   
+   public static async Task SeedAsync(RoleManager<Role> _roleManager)
+        {
+            var rolesCount = await _roleManager.Roles.CountAsync();
+            if (rolesCount<=0)
+            {
+
+                await _roleManager.CreateAsync(new Role()
+                {
+                    Name="Admin"
+                });
+                await _roleManager.CreateAsync(new Role()
+                {
+                    Name="User"
+                });
+            }
+        }
+
+   
+    public static async Task SeedAsync(UserManager<User> _userManager)
+        {
+            var usersCount = await _userManager.Users.CountAsync();
+            if (usersCount <= 0)
+            {
+                var defaultuser = new User()
+                {
+                    UserName = "admin",
+                    Email = "admin@project.com",
+                    FullName="",
+                    Country="Egypt",
+                    PhoneNumber="123456",
+                    Address="Egypt",
+                    EmailConfirmed = true,
+                    PhoneNumberConfirmed = true
+                };
+                await _userManager.CreateAsync(defaultuser, "M123_m");
+                await _userManager.AddToRoleAsync(defaultuser, "Admin");
+            }
+        }
+   
+   
     }
 }
