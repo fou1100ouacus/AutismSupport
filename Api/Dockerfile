@@ -2,12 +2,15 @@
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS base
 WORKDIR /app
 
+# 👇 التعديل الحرج: إجبار الـ Docker على استخدام صلاحية الـ Root مؤقتاً لإنشاء وتعديل ملفات الداتابيز
+USER root
+
 # 2. بيئة البناء والـ SDK لدوت نت 10
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 ARG configuration=Release
 WORKDIR /src
 
-# 3. نسخ ملفات الـ .csproj لكل الطبقات لعمل Restore صحيح ومنع مشاكل الـ Multi-layers
+# 3. نسخ ملفات الـ .csproj لكل الطبقات لعمل Restore صحيح ومنع مشاكل الـ Multi-layers 
 COPY ["Api/Api.csproj", "Api/"]
 COPY ["Core/Core.csproj", "Core/"]
 COPY ["Data/Data.csproj", "Data/"]
@@ -31,4 +34,8 @@ RUN dotnet publish "Api.csproj" -c $configuration -f net10.0 -o /app/publish /p:
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+
+# 👇 التعديل الثاني: التأكد من أن المجلد يمتلك كامل صلاحيات القراءة والكتابة لملف SQLite (.db)
+RUN chmod -R 777 /app
+
 ENTRYPOINT ["dotnet", "Api.dll"]
