@@ -69,7 +69,9 @@ builder.Services.AddSwaggerGen();
 ///////
 builder.Services.AddDbContext<ApplicationDBContext>(option =>
 {
-    // إذا كان التطبيق يعمل أونلاين على Railway
+    // اجعله كدة مؤقتاً للتجربة محلياً ورؤية الملف
+    // إذا كان التطبيق يعمل 
+    //أونلاين على Railway
     if (builder.Environment.IsProduction())
     {
         option.UseSqlite("Data Source=TestDB.db");
@@ -80,7 +82,7 @@ builder.Services.AddDbContext<ApplicationDBContext>(option =>
         option.UseSqlServer(builder.Configuration.GetConnectionString("dbcontext"));
     }
 });
-
+// اجعله كدة مؤقتاً للتجربة محلياً ورؤية الملف
 #region Dependency injections
 
 builder.Services.AddInfrastructureDependencies()
@@ -292,7 +294,7 @@ if (app.Environment.IsProduction())
         await dbContext.Database.EnsureCreatedAsync(); 
         
         // 2. 👇 مناداة دالة الفرش التلقائي للبيانات
-    //    await Infrastructure.Seeder.ApplicationDataSeeder.SeedDataAsync(dbContext);
+      await Infrastructure.Seeder.ApplicationDataSeeder.SeedDataAsync(dbContext);
       await Infrastructure.Seeder.ApplicationDataSeeder.SeedAsync(scope.ServiceProvider.GetRequiredService<UserManager<User>>());
 
     }
