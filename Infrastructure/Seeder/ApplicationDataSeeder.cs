@@ -712,24 +712,40 @@ namespace Infrastructure.Seeder
 
 public static async Task SeedFullCommunityDataAsync(ApplicationDBContext context)
 {
-    // 1. التحقق من وجود حساب الآدمن والمستخدم الآخر
+    // 1. جلب حساب الآدمن الرئيسي
     var defaultAdmin = await context.Users.FirstOrDefaultAsync(u => u.UserName == "admin");
     if (defaultAdmin == null) return;
 
-    var secondUser = await context.Users.Skip(1).FirstOrDefaultAsync() ?? defaultAdmin;
+    // 2. محاولة جلب مستخدم آخر حقيقي، وإذا لم يوجد، لن نقوم بتكرار التفاعلات لنفس المستخدم
+    var secondUser = await context.Users.Where(u => u.UserName != "admin").FirstOrDefaultAsync();
+    
+    // تحديد منطقي: هل لدينا مستخدم ثانٍ حقيقي أم لا؟
+    bool hasSecondUser = secondUser != null;
+    int postCreatorId = hasSecondUser ? secondUser.Id : defaultAdmin.Id;
 
-    // 2. التحقق من أن المنشورات فارغة تماماً
+    // 3. التحقق من أن المنشورات فارغة تماماً
     if (!context.CommunityPosts.Any())
     {
-        // تجهيز المنشور الأول وبداخله تعليقاته وتفاعلاته مباشرة (تمنع مشكلة الـ IDs والـ Filters)
+        // تجهيز التفاعلات للبوست الأول بدون تكرار الـ UserId
+        var postOneReactions = new List<CommunityReaction>
+        {
+            new CommunityReaction { UserId = defaultAdmin.Id, ReactionType = ReactionType.ThumbsUp, TargetType = ReactionTargetType.Post, CreatedAt = DateTime.UtcNow.AddDays(-5) }
+        };
+        // لا نضيف التفاعل الثاني إلا إذا كان المستخدم الثاني حقيقي ومختلف عن الـ Admin تماماً
+        if (hasSecondUser)
+        {
+            postOneReactions.Add(new CommunityReaction { UserId = secondUser.Id, ReactionType = ReactionType.ThumbsUp, TargetType = ReactionTargetType.Post, CreatedAt = DateTime.UtcNow.AddDays(-5) });
+        }
+
+        // تجهيز المنشور الأول وبداخله تعليقاته وتفاعلاته الآمنة
         var postOne = new CommunityPost
         {
             Content = "Hello everyone! My 3-year-old child is showing great progress in communication, but still struggles with naming colors. Does anyone have fun interactive game recommendations to help with this?",
-            UserId = secondUser.Id,
+            UserId = postCreatorId,
             CreatedAt = DateTime.UtcNow.AddDays(-6),
             Status = PostStatus.Approved,
-            CommentsCount = 2,
-            ReactionsCount = 2,
+            CommentsCount = hasSecondUser ? 2 : 1,
+            ReactionsCount = postOneReactions.Count,
             Comments = new List<CommunityComment>
             {
                 new CommunityComment
@@ -738,21 +754,22 @@ public static async Task SeedFullCommunityDataAsync(ApplicationDBContext context
                     Content = "For colors, sorting colored blocks into matching cups worked like magic for my daughter! Start with just two primary colors (Red and Blue) then expand.",
                     Status = CommentStatus.Approved,
                     CreatedAt = DateTime.UtcNow.AddDays(-5)
-                },
-                new CommunityComment
-                {
-                    UserId = secondUser.Id,
-                    Content = "I highly recommend the 'I Spy' game around the living room. Say things like 'I spy something red!' It keeps them moving and learning dynamically.",
-                    Status = CommentStatus.Approved,
-                    CreatedAt = DateTime.UtcNow.AddDays(-5)
                 }
             },
-            Reactions = new List<CommunityReaction>
-            {
-                new CommunityReaction { UserId = defaultAdmin.Id, ReactionType = ReactionType.ThumbsUp, TargetType = ReactionTargetType.Post, CreatedAt = DateTime.UtcNow.AddDays(-5) },
-                new CommunityReaction { UserId = secondUser.Id, ReactionType = ReactionType.ThumbsUp, TargetType = ReactionTargetType.Post, CreatedAt = DateTime.UtcNow.AddDays(-5) }
-            }
+            Reactions = postOneReactions
         };
+
+        // إضافة كومنت المستخدم الثاني فقط لو كان حسابه موجوداً ومختلفاً
+        if (hasSecondUser)
+        {
+            postOne.Comments.Add(new CommunityComment
+            {
+                UserId = secondUser.Id,
+                Content = "I highly recommend the 'I Spy' game around the living room. Say things like 'I spy something red!' It keeps them moving and learning dynamically.",
+                Status = CommentStatus.Approved,
+                CreatedAt = DateTime.UtcNow.AddDays(-5)
+            });
+        }
 
         // تجهيز المنشور الثاني وبداخله تعليقاته وتفاعلاته
         var postTwo = new CommunityPost
@@ -761,40 +778,47 @@ public static async Task SeedFullCommunityDataAsync(ApplicationDBContext context
             UserId = defaultAdmin.Id,
             CreatedAt = DateTime.UtcNow.AddDays(-4),
             Status = PostStatus.Approved,
-            CommentsCount = 1,
-            ReactionsCount = 1,
-            Comments = new List<CommunityComment>
-            {
-                new CommunityComment
-                {
-                    UserId = secondUser.Id,
-                    Content = "This is incredibly heartwarming to read! Congratulations on this beautiful milestone! 🎉",
-                    Status = CommentStatus.Approved,
-                    CreatedAt = DateTime.UtcNow.AddDays(-3)
-                }
-            },
-            Reactions = new List<CommunityReaction>
-            {
-                new CommunityReaction { UserId = secondUser.Id, ReactionType = ReactionType.Heart, TargetType = ReactionTargetType.Post, CreatedAt = DateTime.UtcNow.AddDays(-3) }
-            }
+            CommentsCount = hasSecondUser ? 1 : 0,
+            ReactionsCount = hasSecondUser ? 1 : 0,
+            Comments = new List<CommunityComment>(),
+            Reactions = new List<CommunityReaction>()
         };
+
+        if (hasSecondUser)
+        {
+            postTwo.Comments.Add(new CommunityComment
+            {
+                UserId = secondUser.Id,
+                Content = "This is incredibly heartwarming to read! Congratulations on this beautiful milestone! 🎉",
+                Status = CommentStatus.Approved,
+                CreatedAt = DateTime.UtcNow.AddDays(-3)
+            });
+
+            postTwo.Reactions.Add(new CommunityReaction 
+            { 
+                UserId = secondUser.Id, 
+                ReactionType = ReactionType.Heart, 
+                TargetType = ReactionTargetType.Post, 
+                CreatedAt = DateTime.UtcNow.AddDays(-3) 
+            });
+        }
 
         // منشور ثالث عادي بدون تفاعلات
         var postThree = new CommunityPost
         {
             Content = "Quick tip for managing screen time: High sensory videos often overstimulate kids, making social focus harder later. Try shifting to interactive or educational audiobooks for 20 minutes instead.",
-            UserId = secondUser.Id,
+            UserId = postCreatorId,
             CreatedAt = DateTime.UtcNow.AddDays(-2),
             Status = PostStatus.Approved,
             CommentsCount = 0,
             ReactionsCount = 0
         };
 
-        // المنشور الرابع (Spam) وبداخله البلاغ الموجه ضده مباشرة لحل مشكلة الـ Required Required relationship والـ Filters
+        // المنشور الرابع (Spam) وبداخله البلاغ الموجه ضده مباشرة 
         var postFour = new CommunityPost
         {
             Content = "This is an inappropriate spam post containing promotional advertising links and non-community related content.",
-            UserId = secondUser.Id,
+            UserId = postCreatorId,
             CreatedAt = DateTime.UtcNow.AddHours(-5),
             Status = PostStatus.Pending,
             CommentsCount = 0,
@@ -812,10 +836,10 @@ public static async Task SeedFullCommunityDataAsync(ApplicationDBContext context
             }
         };
 
-        // إضافة كل البوستات بملحقاتها في خطوة واحدة تضمن حفظ العلاقات بنجاح في الـ SQLite
+        // إضافة كل البوستات المحمية بالـ Validation في خطوة واحدة
         await context.CommunityPosts.AddRangeAsync(new List<CommunityPost> { postOne, postTwo, postThree, postFour });
         
-        // 💾 حفظ نهائي واحد وآمن في قاعدة البيانات
+        // 💾 حفظ نهائي آمن 100% متوافق مع الـ Unique Constraints
         await context.SaveChangesAsync();
     }
 }
