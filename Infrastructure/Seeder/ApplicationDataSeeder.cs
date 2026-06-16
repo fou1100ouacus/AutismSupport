@@ -575,139 +575,250 @@ namespace Infrastructure.Seeder
             await SeedFullCommunityDataAsync(context);
         }
 
-        public static async Task SeedFullCommunityDataAsync(ApplicationDBContext context)
+        // public static async Task SeedFullCommunityDataAsync(ApplicationDBContext context)
+        // {
+        //     // التحقق من وجود حساب الآدمن لربطه بالعلاقات
+        //     var defaultAdmin = await context.Users.FirstOrDefaultAsync(u => u.UserName == "admin");
+        //     if (defaultAdmin == null) return;
+
+        //     var secondUser = await context.Users.Skip(1).FirstOrDefaultAsync() ?? defaultAdmin;
+
+        //     // أ. فرش المنشورات (CommunityPosts) أولاً وحفظها منفصلة لضمان توليد الـ IDs في الـ SQLite
+        //     if (!context.CommunityPosts.Any())
+        //     {
+        //         var seedPosts = new List<CommunityPost>
+        //         {
+        //             new CommunityPost
+        //             {
+        //                 Content = "Hello everyone! My 3-year-old child is showing great progress in communication, but still struggles with naming colors. Does anyone have fun interactive game recommendations to help with this?",
+        //                 UserId = secondUser.Id,
+        //                 CreatedAt = DateTime.UtcNow.AddDays(-6),
+        //                 Status = PostStatus.Approved,
+        //                 CommentsCount = 2,
+        //                 ReactionsCount = 2
+        //             },
+        //             new CommunityPost
+        //             {
+        //                 Content = "An absolute milestone today! After weeks of consistent tracking and applying the communication recommendations, my son initiated eye contact and asked for water clearly! Consistency is key, parents.",
+        //                 UserId = defaultAdmin.Id,
+        //                 CreatedAt = DateTime.UtcNow.AddDays(-4),
+        //                 Status = PostStatus.Approved,
+        //                 CommentsCount = 1,
+        //                 ReactionsCount = 1
+        //             },
+        //             new CommunityPost
+        //             {
+        //                 Content = "Quick tip for managing screen time: High sensory videos often overstimulate kids, making social focus harder later. Try shifting to interactive or educational audiobooks for 20 minutes instead.",
+        //                 UserId = secondUser.Id,
+        //                 CreatedAt = DateTime.UtcNow.AddDays(-2),
+        //                 Status = PostStatus.Approved,
+        //                 CommentsCount = 0,
+        //                 ReactionsCount = 0
+        //             },
+        //             new CommunityPost
+        //             {
+        //                 Content = "This is an inappropriate spam post containing promotional advertising links and non-community related content.",
+        //                 UserId = secondUser.Id,
+        //                 CreatedAt = DateTime.UtcNow.AddHours(-5),
+        //                 Status = PostStatus.Pending,
+        //                 CommentsCount = 0,
+        //                 ReactionsCount = 0
+        //             }
+        //         };
+
+        //         await context.CommunityPosts.AddRangeAsync(seedPosts);
+        //         await context.SaveChangesAsync(); // خطوة إلزامية لـ SQLite عشان نقدر نربط الكومنتات واللايكات بـ IDs حقيقية
+        //     }
+
+        //     // جلب المنشورات المخزنة حالياً لبناء العلاقات الفرعية بأمان
+        //     var trackPosts = await context.CommunityPosts.ToListAsync();
+        //     if (!trackPosts.Any()) return;
+
+        //     var postOne = trackPosts[0];
+        //     var postTwo = trackPosts[1];
+        //     var postFour = trackPosts.Last(); 
+
+        //     // ب. فرش التعليقات (CommunityComments)
+        //     if (!context.CommunityComments.Any())
+        //     {
+        //         var seedComments = new List<CommunityComment>
+        //         {
+        //             new CommunityComment
+        //             {
+        //                 PostId = postOne.Id,
+        //                 UserId = defaultAdmin.Id,
+        //                 Content = "For colors, sorting colored blocks into matching cups worked like magic for my daughter! Start with just two primary colors (Red and Blue) then expand.",
+        //                 Status = CommentStatus.Approved,
+        //                 CreatedAt = DateTime.UtcNow.AddDays(-5)
+        //             },
+        //             new CommunityComment
+        //             {
+        //                 PostId = postOne.Id,
+        //                 UserId = secondUser.Id,
+        //                 Content = "I highly recommend the 'I Spy' game around the living room. Say things like 'I spy something red!' It keeps them moving and learning dynamically.",
+        //                 Status = CommentStatus.Approved,
+        //                 CreatedAt = DateTime.UtcNow.AddDays(-5)
+        //             },
+        //             new CommunityComment
+        //             {
+        //                 PostId = postTwo.Id,
+        //                 UserId = secondUser.Id,
+        //                 Content = "This is incredibly heartwarming to read! Congratulations on this beautiful milestone! 🎉",
+        //                 Status = CommentStatus.Approved,
+        //                 CreatedAt = DateTime.UtcNow.AddDays(-3)
+        //             }
+        //         };
+
+        //         await context.CommunityComments.AddRangeAsync(seedComments);
+        //     }
+
+        //     // ج. فرش التفاعلات (CommunityReactions)
+        //     if (!context.CommunityReactions.Any())
+        //     {
+        //         var seedReactions = new List<CommunityReaction>
+        //         {
+        //             new CommunityReaction { PostId = postOne.Id, UserId = defaultAdmin.Id, ReactionType = ReactionType.ThumbsUp, TargetType = ReactionTargetType.Post, CreatedAt = DateTime.UtcNow.AddDays(-5) },
+        //             new CommunityReaction { PostId = postOne.Id, UserId = secondUser.Id, ReactionType = ReactionType.ThumbsUp, TargetType = ReactionTargetType.Post, CreatedAt = DateTime.UtcNow.AddDays(-5) },
+        //             new CommunityReaction { PostId = postTwo.Id, UserId = secondUser.Id, ReactionType = ReactionType.Heart, TargetType = ReactionTargetType.Post, CreatedAt = DateTime.UtcNow.AddDays(-3) }
+        //         };
+
+        //         await context.CommunityReactions.AddRangeAsync(seedReactions);
+        //     }
+
+        //     // د. فرش البلاغات (CommunityReports)
+        //     if (!context.CommunityReports.Any())
+        //     {
+        //         var seedReports = new List<CommunityReport>
+        //         {
+        //             new CommunityReport
+        //             {
+        //                 PostId = postFour.Id, 
+        //                 ReportedByUserId = defaultAdmin.Id,
+        //                 Reason = "Spam, commercial advertising, and violations of community guidelines.",
+        //                 TargetType = ReportTargetType.Post,
+        //                 Status = ReportStatus.Open,
+        //                 CreatedAt = DateTime.UtcNow.AddHours(-4)
+        //             }
+        //         };
+
+        //         await context.CommunityReports.AddRangeAsync(seedReports);
+        //     }
+
+        //     // الحفظ النهائي لكافة الكومنتات واللايكات والبلاغات معاً في الـ SQLite
+        //     await context.SaveChangesAsync();
+        // }
+
+
+
+public static async Task SeedFullCommunityDataAsync(ApplicationDBContext context)
+{
+    // 1. التحقق من وجود حساب الآدمن والمستخدم الآخر
+    var defaultAdmin = await context.Users.FirstOrDefaultAsync(u => u.UserName == "admin");
+    if (defaultAdmin == null) return;
+
+    var secondUser = await context.Users.Skip(1).FirstOrDefaultAsync() ?? defaultAdmin;
+
+    // 2. التحقق من أن المنشورات فارغة تماماً
+    if (!context.CommunityPosts.Any())
+    {
+        // تجهيز المنشور الأول وبداخله تعليقاته وتفاعلاته مباشرة (تمنع مشكلة الـ IDs والـ Filters)
+        var postOne = new CommunityPost
         {
-            // التحقق من وجود حساب الآدمن لربطه بالعلاقات
-            var defaultAdmin = await context.Users.FirstOrDefaultAsync(u => u.UserName == "admin");
-            if (defaultAdmin == null) return;
-
-            var secondUser = await context.Users.Skip(1).FirstOrDefaultAsync() ?? defaultAdmin;
-
-            // أ. فرش المنشورات (CommunityPosts) أولاً وحفظها منفصلة لضمان توليد الـ IDs في الـ SQLite
-            if (!context.CommunityPosts.Any())
+            Content = "Hello everyone! My 3-year-old child is showing great progress in communication, but still struggles with naming colors. Does anyone have fun interactive game recommendations to help with this?",
+            UserId = secondUser.Id,
+            CreatedAt = DateTime.UtcNow.AddDays(-6),
+            Status = PostStatus.Approved,
+            CommentsCount = 2,
+            ReactionsCount = 2,
+            Comments = new List<CommunityComment>
             {
-                var seedPosts = new List<CommunityPost>
+                new CommunityComment
                 {
-                    new CommunityPost
-                    {
-                        Content = "Hello everyone! My 3-year-old child is showing great progress in communication, but still struggles with naming colors. Does anyone have fun interactive game recommendations to help with this?",
-                        UserId = secondUser.Id,
-                        CreatedAt = DateTime.UtcNow.AddDays(-6),
-                        Status = PostStatus.Approved,
-                        CommentsCount = 2,
-                        ReactionsCount = 2
-                    },
-                    new CommunityPost
-                    {
-                        Content = "An absolute milestone today! After weeks of consistent tracking and applying the communication recommendations, my son initiated eye contact and asked for water clearly! Consistency is key, parents.",
-                        UserId = defaultAdmin.Id,
-                        CreatedAt = DateTime.UtcNow.AddDays(-4),
-                        Status = PostStatus.Approved,
-                        CommentsCount = 1,
-                        ReactionsCount = 1
-                    },
-                    new CommunityPost
-                    {
-                        Content = "Quick tip for managing screen time: High sensory videos often overstimulate kids, making social focus harder later. Try shifting to interactive or educational audiobooks for 20 minutes instead.",
-                        UserId = secondUser.Id,
-                        CreatedAt = DateTime.UtcNow.AddDays(-2),
-                        Status = PostStatus.Approved,
-                        CommentsCount = 0,
-                        ReactionsCount = 0
-                    },
-                    new CommunityPost
-                    {
-                        Content = "This is an inappropriate spam post containing promotional advertising links and non-community related content.",
-                        UserId = secondUser.Id,
-                        CreatedAt = DateTime.UtcNow.AddHours(-5),
-                        Status = PostStatus.Pending,
-                        CommentsCount = 0,
-                        ReactionsCount = 0
-                    }
-                };
-
-                await context.CommunityPosts.AddRangeAsync(seedPosts);
-                await context.SaveChangesAsync(); // خطوة إلزامية لـ SQLite عشان نقدر نربط الكومنتات واللايكات بـ IDs حقيقية
-            }
-
-            // جلب المنشورات المخزنة حالياً لبناء العلاقات الفرعية بأمان
-            var trackPosts = await context.CommunityPosts.ToListAsync();
-            if (!trackPosts.Any()) return;
-
-            var postOne = trackPosts[0];
-            var postTwo = trackPosts[1];
-            var postFour = trackPosts.Last(); 
-
-            // ب. فرش التعليقات (CommunityComments)
-            if (!context.CommunityComments.Any())
+                    UserId = defaultAdmin.Id,
+                    Content = "For colors, sorting colored blocks into matching cups worked like magic for my daughter! Start with just two primary colors (Red and Blue) then expand.",
+                    Status = CommentStatus.Approved,
+                    CreatedAt = DateTime.UtcNow.AddDays(-5)
+                },
+                new CommunityComment
+                {
+                    UserId = secondUser.Id,
+                    Content = "I highly recommend the 'I Spy' game around the living room. Say things like 'I spy something red!' It keeps them moving and learning dynamically.",
+                    Status = CommentStatus.Approved,
+                    CreatedAt = DateTime.UtcNow.AddDays(-5)
+                }
+            },
+            Reactions = new List<CommunityReaction>
             {
-                var seedComments = new List<CommunityComment>
-                {
-                    new CommunityComment
-                    {
-                        PostId = postOne.Id,
-                        UserId = defaultAdmin.Id,
-                        Content = "For colors, sorting colored blocks into matching cups worked like magic for my daughter! Start with just two primary colors (Red and Blue) then expand.",
-                        Status = CommentStatus.Approved,
-                        CreatedAt = DateTime.UtcNow.AddDays(-5)
-                    },
-                    new CommunityComment
-                    {
-                        PostId = postOne.Id,
-                        UserId = secondUser.Id,
-                        Content = "I highly recommend the 'I Spy' game around the living room. Say things like 'I spy something red!' It keeps them moving and learning dynamically.",
-                        Status = CommentStatus.Approved,
-                        CreatedAt = DateTime.UtcNow.AddDays(-5)
-                    },
-                    new CommunityComment
-                    {
-                        PostId = postTwo.Id,
-                        UserId = secondUser.Id,
-                        Content = "This is incredibly heartwarming to read! Congratulations on this beautiful milestone! 🎉",
-                        Status = CommentStatus.Approved,
-                        CreatedAt = DateTime.UtcNow.AddDays(-3)
-                    }
-                };
-
-                await context.CommunityComments.AddRangeAsync(seedComments);
+                new CommunityReaction { UserId = defaultAdmin.Id, ReactionType = ReactionType.ThumbsUp, TargetType = ReactionTargetType.Post, CreatedAt = DateTime.UtcNow.AddDays(-5) },
+                new CommunityReaction { UserId = secondUser.Id, ReactionType = ReactionType.ThumbsUp, TargetType = ReactionTargetType.Post, CreatedAt = DateTime.UtcNow.AddDays(-5) }
             }
+        };
 
-            // ج. فرش التفاعلات (CommunityReactions)
-            if (!context.CommunityReactions.Any())
+        // تجهيز المنشور الثاني وبداخله تعليقاته وتفاعلاته
+        var postTwo = new CommunityPost
+        {
+            Content = "An absolute milestone today! After weeks of consistent tracking and applying the communication recommendations, my son initiated eye contact and asked for water clearly! Consistency is key, parents.",
+            UserId = defaultAdmin.Id,
+            CreatedAt = DateTime.UtcNow.AddDays(-4),
+            Status = PostStatus.Approved,
+            CommentsCount = 1,
+            ReactionsCount = 1,
+            Comments = new List<CommunityComment>
             {
-                var seedReactions = new List<CommunityReaction>
+                new CommunityComment
                 {
-                    new CommunityReaction { PostId = postOne.Id, UserId = defaultAdmin.Id, ReactionType = ReactionType.ThumbsUp, TargetType = ReactionTargetType.Post, CreatedAt = DateTime.UtcNow.AddDays(-5) },
-                    new CommunityReaction { PostId = postOne.Id, UserId = secondUser.Id, ReactionType = ReactionType.ThumbsUp, TargetType = ReactionTargetType.Post, CreatedAt = DateTime.UtcNow.AddDays(-5) },
-                    new CommunityReaction { PostId = postTwo.Id, UserId = secondUser.Id, ReactionType = ReactionType.Heart, TargetType = ReactionTargetType.Post, CreatedAt = DateTime.UtcNow.AddDays(-3) }
-                };
-
-                await context.CommunityReactions.AddRangeAsync(seedReactions);
-            }
-
-            // د. فرش البلاغات (CommunityReports)
-            if (!context.CommunityReports.Any())
+                    UserId = secondUser.Id,
+                    Content = "This is incredibly heartwarming to read! Congratulations on this beautiful milestone! 🎉",
+                    Status = CommentStatus.Approved,
+                    CreatedAt = DateTime.UtcNow.AddDays(-3)
+                }
+            },
+            Reactions = new List<CommunityReaction>
             {
-                var seedReports = new List<CommunityReport>
-                {
-                    new CommunityReport
-                    {
-                        PostId = postFour.Id, 
-                        ReportedByUserId = defaultAdmin.Id,
-                        Reason = "Spam, commercial advertising, and violations of community guidelines.",
-                        TargetType = ReportTargetType.Post,
-                        Status = ReportStatus.Open,
-                        CreatedAt = DateTime.UtcNow.AddHours(-4)
-                    }
-                };
-
-                await context.CommunityReports.AddRangeAsync(seedReports);
+                new CommunityReaction { UserId = secondUser.Id, ReactionType = ReactionType.Heart, TargetType = ReactionTargetType.Post, CreatedAt = DateTime.UtcNow.AddDays(-3) }
             }
+        };
 
-            // الحفظ النهائي لكافة الكومنتات واللايكات والبلاغات معاً في الـ SQLite
-            await context.SaveChangesAsync();
-        }
+        // منشور ثالث عادي بدون تفاعلات
+        var postThree = new CommunityPost
+        {
+            Content = "Quick tip for managing screen time: High sensory videos often overstimulate kids, making social focus harder later. Try shifting to interactive or educational audiobooks for 20 minutes instead.",
+            UserId = secondUser.Id,
+            CreatedAt = DateTime.UtcNow.AddDays(-2),
+            Status = PostStatus.Approved,
+            CommentsCount = 0,
+            ReactionsCount = 0
+        };
 
+        // المنشور الرابع (Spam) وبداخله البلاغ الموجه ضده مباشرة لحل مشكلة الـ Required Required relationship والـ Filters
+        var postFour = new CommunityPost
+        {
+            Content = "This is an inappropriate spam post containing promotional advertising links and non-community related content.",
+            UserId = secondUser.Id,
+            CreatedAt = DateTime.UtcNow.AddHours(-5),
+            Status = PostStatus.Pending,
+            CommentsCount = 0,
+            ReactionsCount = 0,
+            Reports = new List<CommunityReport>
+            {
+                new CommunityReport
+                {
+                    ReportedByUserId = defaultAdmin.Id,
+                    Reason = "Spam, commercial advertising, and violations of community guidelines.",
+                    TargetType = ReportTargetType.Post,
+                    Status = ReportStatus.Open,
+                    CreatedAt = DateTime.UtcNow.AddHours(-4)
+                }
+            }
+        };
+
+        // إضافة كل البوستات بملحقاتها في خطوة واحدة تضمن حفظ العلاقات بنجاح في الـ SQLite
+        await context.CommunityPosts.AddRangeAsync(new List<CommunityPost> { postOne, postTwo, postThree, postFour });
+        
+        // 💾 حفظ نهائي واحد وآمن في قاعدة البيانات
+        await context.SaveChangesAsync();
+    }
+}
         public static async Task SeedAsync(RoleManager<Role> _roleManager)
         {
             var rolesCount = await _roleManager.Roles.CountAsync();
