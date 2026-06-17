@@ -1,5 +1,6 @@
 ﻿using Api.Base;
 using Core.Features.Community.Comments.Commands.Models;
+using Core.Features.Community.Comments.Queries.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,6 +11,13 @@ namespace Api.Controllers
     [Authorize]
     public class CommentsController : AppControllerBase
     {
+        [HttpGet("post/{postId}")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetByPostId([FromRoute] int postId)
+        {
+            return NewResult(await Mediator.Send(new GetCommentsByPostIdQuery(postId)));
+        }
+
         [HttpPost]
         [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> Create([FromBody] CreateCommentCommand command)

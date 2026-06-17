@@ -7,7 +7,7 @@ namespace Service.Abstracts
     {
         Task<CommunityPost> GetByIdAsync(int id);
         Task<(List<CommunityPost> Items, int TotalCount)> GetFeedAsync(int pageNumber, int pageSize);
-        Task<CommunityPost> CreateAsync(string content, string photoUrl, int userId);
+        Task<CommunityPost> CreateAsync(string content, string? photoUrl, int userId);
         Task<bool> DeleteAsync(int id, int userId);
         Task ModerateAsync(int id, PostStatus status, string note, int moderatorId);
     }
@@ -23,6 +23,7 @@ namespace Service.Abstracts
     public interface ICommunityReactionService
     {
         Task ToggleReactionAsync(int userId, ReactionTargetType targetType, int targetId, ReactionType reactionType);
+        Task<bool> HasUserReactedAsync(int userId, ReactionTargetType targetType, int targetId);
     }
 
     public interface ICommunityReportService

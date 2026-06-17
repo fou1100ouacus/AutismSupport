@@ -1,6 +1,7 @@
 ﻿using Api.Base;
 using Core.Features.Community.Posts.Commands.Models;
 using Core.Features.Community.Posts.Queries.Models;
+using Core.Features.Community.Reactions.Queries.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -22,6 +23,19 @@ namespace Api.Controllers
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
             return NewResult(await Mediator.Send(new GetPostByIdQuery(id)));
+        }
+
+        [HttpGet("{id}/reactions/count")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetReactionsCount([FromRoute] int id)
+        {
+            return NewResult(await Mediator.Send(new GetReactionsCountQuery { PostId = id }));
+        }
+
+        [HttpGet("{id}/reactions/me")]
+        public async Task<IActionResult> GetMyReaction([FromRoute] int id)
+        {
+            return NewResult(await Mediator.Send(new GetMyReactionQuery { PostId = id }));
         }
 
         [HttpPost]
