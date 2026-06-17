@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 
 using Microsoft.AspNetCore.Mvc.Infrastructure;
-
+using System.Reflection;
 using Microsoft.AspNetCore.Mvc.Routing;
 
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +17,8 @@ using Core;
 using Core.Filters;
 
 using Core.MiddleWare;
+
+using Api;
 
 using Data.Entities.Identity;
 
@@ -50,21 +52,45 @@ builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 
-builder.Services.AddSwaggerGen();
 
 
+// builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    // Add custom schema filter to include enum value descriptions
+    options.SchemaFilter<EnumSchemaFilter>();
+
+    // 1. قراءة ملف الـ XML الخاص بمشروع الـ Api نفسه
+    var apiXmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var apiXmlPath = Path.Combine(AppContext.BaseDirectory, apiXmlFile);
+    if (File.Exists(apiXmlPath))
+    {
+        options.IncludeXmlComments(apiXmlPath);
+    }
+
+    // 2. قراءة ملف الـ XML الخاص بمشروع الـ Core (طريقة ديناميكية مضمونة)
+    // نستخدم اسم الكلاس QuestionAnswerDto ليعرف الـ .NET مكان الملف بالضبط
+    var coreAssembly = typeof(Core.Features.AbilitiesTracker.QuestionAnswerDto).Assembly;
+    var coreXmlFile = $"{coreAssembly.GetName().Name}.xml";
+    var coreXmlPath = Path.Combine(AppContext.BaseDirectory, coreXmlFile);
+
+    if (File.Exists(coreXmlPath))
+    {
+        options.IncludeXmlComments(coreXmlPath);
+    }
+
+    // 3. قراءة ملف الـ XML الخاص بمشروع الـ Data (للEnums والـ DTOs)
+    var dataAssembly = typeof(Data.Enums.StudentOrderingEnum).Assembly;
+    var dataXmlFile = $"{dataAssembly.GetName().Name}.xml";
+    var dataXmlPath = Path.Combine(AppContext.BaseDirectory, dataXmlFile);
+
+    if (File.Exists(dataXmlPath))
+    {
+        options.IncludeXmlComments(dataXmlPath);
+    }
+});
 
 
-
-//dotnet ef migrations add InitialIdentity --context ApplicationDBContext --output-dir Data\Migrations
-
-// builder.Services.AddDbContext<ApplicationDBContext>(option =>
-
-// {
-
-//     option.UseSqlServer(builder.Configuration.GetConnectionString("dbcontext"));
-
-// });
 
 ///////
 builder.Services.AddDbContext<ApplicationDBContext>(option =>

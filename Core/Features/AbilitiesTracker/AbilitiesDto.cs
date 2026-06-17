@@ -54,14 +54,20 @@ namespace Core.Features.AbilitiesTracker
     
     public class SubmitTestRequestDto
     {
-        public int ChildId { get; set; }
         public List<QuestionAnswerDto> Answers { get; set; } = new();
     }
 
     public class QuestionAnswerDto
     {
-        public int QuestionId { get; set; }
-        public int AnswerValue { get; set; } // 0 = أبداً، 1 = أحياناً، 2 = دائماً
+       public int QuestionId { get; set; }
+
+        /// <summary>
+        /// Answer value for the question:
+        /// 0 = Never
+        /// 1 = Sometimes
+        /// 2 = Always
+        /// </summary>
+        public int AnswerValue { get; set; }
     }
 
     public class TestResultResponseDto

@@ -4,6 +4,8 @@
 <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
@@ -29,5 +31,4 @@
     <Folder Include="Mapping\Departments\CommandMapping\" />
     <Folder Include="Mapping\Instructors\Queries\" />
   </ItemGroup>
-
 </Project>
