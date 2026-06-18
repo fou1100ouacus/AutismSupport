@@ -12,7 +12,7 @@ namespace Infrastructure.Data.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "ChildProfiles",
+                name: "ChildProfile",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -43,12 +43,12 @@ namespace Infrastructure.Data.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_ChildProfiles_CreatedAt",
-                table: "ChildProfiles",
+                table: "ChildProfile",
                 column: "CreatedAt");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ChildProfiles_MotherId",
-                table: "ChildProfiles",
+                table: "ChildProfile",
                 column: "MotherId",
                 unique: true);
         }
@@ -57,7 +57,7 @@ namespace Infrastructure.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ChildProfiles");
+                name: "ChildProfile");
         }
     }
 }

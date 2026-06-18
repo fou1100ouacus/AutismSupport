@@ -112,6 +112,52 @@ namespace Infrastructure.Data.Migrations
                     b.ToTable("AbilityTestResults", (string)null);
                 });
 
+            modelBuilder.Entity("Data.Entities.AbilitiesTracker.MotionAnalysisResult", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChildId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Prediction")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<decimal>("SmmPercentage")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("SmmSegmentsCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Pending");
+
+                    b.Property<decimal>("VideoDuration")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("VideoUrl")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChildId");
+
+                    b.ToTable("MotionAnalysisResults", (string)null);
+                });
+
             modelBuilder.Entity("Data.Entities.Child.ChildProfile", b =>
                 {
                     b.Property<int>("Id")
@@ -167,7 +213,7 @@ namespace Infrastructure.Data.Migrations
                     b.HasIndex("MotherId")
                         .IsUnique();
 
-                    b.ToTable("ChildProfiles", (string)null);
+                    b.ToTable("ChildProfile", (string)null);
                 });
 
             modelBuilder.Entity("Data.Entities.Community.CommunityComment", b =>
@@ -658,6 +704,17 @@ namespace Infrastructure.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+
+                    b.Navigation("Child");
+                });
+
+            modelBuilder.Entity("Data.Entities.AbilitiesTracker.MotionAnalysisResult", b =>
+                {
+                    b.HasOne("Data.Entities.Child.ChildProfile", "Child")
+                        .WithMany()
+                        .HasForeignKey("ChildId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Child");
                 });

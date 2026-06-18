@@ -26,13 +26,14 @@ namespace Infrastructure.Context
         }
         public DbSet<User> User { get; set; }
        // public DbSet<Student> students { get; set; }
-       public DbSet<ChildProfile> ChildProfiles { get; set; }
+       public DbSet<ChildProfile> ChildProfile { get; set; }
         public DbSet<UserRefreshToken> UserRefreshToken { get; set; }
         public DbSet<AbilityCategory> AbilityCategories { get; set; }
         public DbSet<AbilityQuestion> AbilityQuestions { get; set; }
         public DbSet<AbilityTestResult> AbilityTestResults { get; set; }
      
-     
+     // ai motion analysis
+        public DbSet<MotionAnalysisResult> MotionAnalysisResults { get; set; }
      
         // Community
         public DbSet<CommunityPost> CommunityPosts { get; set; }

@@ -221,7 +221,8 @@ builder.Services.AddTransient<IUrlHelper>(x =>
 
 builder.Services.AddTransient<AuthFilter>();
 
-
+// Register HttpClient for DI (used by AnalyzeChildMotionCommandHandler)
+builder.Services.AddHttpClient();
 
 //Serilog
 
@@ -309,21 +310,27 @@ app.UseAuthorization();
 app.MapControllers();
 
 
-// في نهاية ملف Program.cs قبل app.Run()
-if (app.Environment.IsProduction())
+// Database initialization - apply pending migrations on startup
+using (var scope = app.Services.CreateScope())
 {
-    using (var scope = app.Services.CreateScope())
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDBContext>();
+    
+    try
     {
-        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDBContext>();
-        
-        // 1. إنشاء الداتابيز أونلاين في حالة عدم وجودها
-        await dbContext.Database.EnsureCreatedAsync(); 
-        
-        // 2. 👇 مناداة دالة الفرش التلقائي للبيانات
-      await Infrastructure.Seeder.ApplicationDataSeeder.SeedDataAsync(dbContext);
-      await Infrastructure.Seeder.ApplicationDataSeeder.SeedAsync(scope.ServiceProvider.GetRequiredService<UserManager<User>>());
-      await Infrastructure.Seeder.ApplicationDataSeeder.SeedFullCommunityDataAsync(dbContext);
+        // Try to apply pending migrations (this creates the ChildProfile table and all other missing tables)
+        await dbContext.Database.MigrateAsync();
     }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Migration failed: {ex.Message}. Falling back to EnsureCreated...");
+        // Fallback: create database and tables from the model if migrations cannot be applied
+        await dbContext.Database.EnsureCreatedAsync();
+    }
+    
+    // Seed initial data
+    await Infrastructure.Seeder.ApplicationDataSeeder.SeedDataAsync(dbContext);
+    await Infrastructure.Seeder.ApplicationDataSeeder.SeedAsync(scope.ServiceProvider.GetRequiredService<UserManager<User>>());
+    await Infrastructure.Seeder.ApplicationDataSeeder.SeedFullCommunityDataAsync(dbContext);
 }
 
 

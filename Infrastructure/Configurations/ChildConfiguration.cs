@@ -9,7 +9,7 @@ namespace Infrastructure.Configurations
     {   
         public void Configure(EntityTypeBuilder<ChildProfile> builder)
         {
-            builder.ToTable("ChildProfiles");
+            builder.ToTable("ChildProfile");
 
             // Primary Key
             builder.HasKey(c => c.Id);
