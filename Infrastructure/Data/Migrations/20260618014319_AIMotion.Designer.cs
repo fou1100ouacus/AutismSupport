@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20260426174213_MakePhotoUrlNullable")]
-    partial class MakePhotoUrlNullable
+    [Migration("20260618014319_AIMotion")]
+    partial class AIMotion
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,142 @@ namespace Infrastructure.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Data.Entities.AbilitiesTracker.AbilityCategory", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NameEn")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AbilityCategories", (string)null);
+                });
+
+            modelBuilder.Entity("Data.Entities.AbilitiesTracker.AbilityQuestion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("IsPositiveSkill")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("QuestionTextAr")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("QuestionTextEn")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.ToTable("AbilityQuestions", (string)null);
+                });
+
+            modelBuilder.Entity("Data.Entities.AbilitiesTracker.AbilityTestResult", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int?>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ChildId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DetailedAnswersJson")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Level")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<DateTime>("TestDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<double?>("TotalPercentage")
+                        .HasColumnType("float");
+
+                    b.Property<int>("TotalScore")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CategoryId");
+
+                    b.HasIndex("ChildId");
+
+                    b.ToTable("AbilityTestResults", (string)null);
+                });
+
+            modelBuilder.Entity("Data.Entities.AbilitiesTracker.MotionAnalysisResult", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChildId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Prediction")
+                        .HasMaxLength(250)
+                        .HasColumnType("nvarchar(250)");
+
+                    b.Property<decimal>("SmmPercentage")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("SmmSegmentsCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)")
+                        .HasDefaultValue("Pending");
+
+                    b.Property<decimal>("VideoDuration")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("VideoUrl")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChildId");
+
+                    b.ToTable("MotionAnalysisResults", (string)null);
+                });
 
             modelBuilder.Entity("Data.Entities.Child.ChildProfile", b =>
                 {
@@ -111,7 +247,6 @@ namespace Infrastructure.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ModerationNote")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -209,14 +344,12 @@ namespace Infrastructure.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("CommentId")
-                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<int?>("PostId")
-                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<int>("ReactionType")
@@ -234,8 +367,9 @@ namespace Infrastructure.Data.Migrations
 
                     b.HasIndex("PostId");
 
-                    b.HasIndex("UserId", "PostId", "CommentId", "TargetType")
-                        .IsUnique();
+                    b.HasIndex("UserId", "PostId", "TargetType")
+                        .IsUnique()
+                        .HasFilter("[PostId] IS NOT NULL");
 
                     b.ToTable("CommunityReactions", (string)null);
                 });
@@ -270,7 +404,6 @@ namespace Infrastructure.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ResolutionNote")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
@@ -446,33 +579,6 @@ namespace Infrastructure.Data.Migrations
                     b.ToTable("UserRefreshToken");
                 });
 
-            modelBuilder.Entity("Data.Entities.Student", b =>
-                {
-                    b.Property<int>("StudID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StudID"));
-
-                    b.Property<string>("Address")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("NameAr")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NameEn")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Phone")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.HasKey("StudID");
-
-                    b.ToTable("students");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
                     b.Property<int>("Id")
@@ -576,6 +682,46 @@ namespace Infrastructure.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Data.Entities.AbilitiesTracker.AbilityQuestion", b =>
+                {
+                    b.HasOne("Data.Entities.AbilitiesTracker.AbilityCategory", "Category")
+                        .WithMany("Questions")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("Data.Entities.AbilitiesTracker.AbilityTestResult", b =>
+                {
+                    b.HasOne("Data.Entities.AbilitiesTracker.AbilityCategory", "Category")
+                        .WithMany()
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Data.Entities.Child.ChildProfile", "Child")
+                        .WithMany("AbilityTestResults")
+                        .HasForeignKey("ChildId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Category");
+
+                    b.Navigation("Child");
+                });
+
+            modelBuilder.Entity("Data.Entities.AbilitiesTracker.MotionAnalysisResult", b =>
+                {
+                    b.HasOne("Data.Entities.Child.ChildProfile", "Child")
+                        .WithMany()
+                        .HasForeignKey("ChildId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Child");
+                });
+
             modelBuilder.Entity("Data.Entities.Child.ChildProfile", b =>
                 {
                     b.HasOne("Data.Entities.Identity.User", "Mother")
@@ -622,14 +768,12 @@ namespace Infrastructure.Data.Migrations
                     b.HasOne("Data.Entities.Community.CommunityComment", "Comment")
                         .WithMany("Reactions")
                         .HasForeignKey("CommentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Data.Entities.Community.CommunityPost", "Post")
                         .WithMany("Reactions")
                         .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Data.Entities.Identity.User", "User")
                         .WithMany()
@@ -729,6 +873,16 @@ namespace Infrastructure.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Data.Entities.AbilitiesTracker.AbilityCategory", b =>
+                {
+                    b.Navigation("Questions");
+                });
+
+            modelBuilder.Entity("Data.Entities.Child.ChildProfile", b =>
+                {
+                    b.Navigation("AbilityTestResults");
                 });
 
             modelBuilder.Entity("Data.Entities.Community.CommunityComment", b =>

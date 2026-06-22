@@ -80,7 +80,7 @@ namespace Infrastructure.Data.Migrations
                     b.HasIndex("MotherId")
                         .IsUnique();
 
-                    b.ToTable("ChildProfiles", (string)null);
+                    b.ToTable("ChildProfile", (string)null);
                 });
 
             modelBuilder.Entity("Data.Entities.Community.CommunityComment", b =>

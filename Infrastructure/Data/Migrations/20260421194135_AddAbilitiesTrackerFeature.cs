@@ -74,7 +74,7 @@ namespace Infrastructure.Data.Migrations
                     table.ForeignKey(
                         name: "FK_AbilityTestResults_ChildProfiles_ChildId",
                         column: x => x.ChildId,
-                        principalTable: "ChildProfiles",
+                        principalTable: "ChildProfile",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });

@@ -121,24 +121,45 @@ using System.Collections.Generic;
 using System.Linq; 
 using System.Threading;
 using System.Threading.Tasks;
-using Service.Abstracts; 
+using Service.Abstracts;
+using Service.AuthServices.Interfaces;
+using Data.Entities.Child;
 
 namespace Core.Features.AbilitiesTracker.Commands
 {
     public class SubmitTestCommandHandler : IRequestHandler<SubmitTestCommand, Response<TestResultResponseDto>>
     {
-        private readonly IAbilityService _abilityService; 
+        private readonly IAbilityService _abilityService;
+        private readonly ICurrentUserService _currentUserService;
+        private readonly IChildService _childService;
 
-        public SubmitTestCommandHandler(IAbilityService abilityService)
+        public SubmitTestCommandHandler(IAbilityService abilityService, ICurrentUserService currentUserService, IChildService childService)
         {
             _abilityService = abilityService;
+            _currentUserService = currentUserService;
+            _childService = childService;
         }
 
         public async Task<Response<TestResultResponseDto>> Handle(SubmitTestCommand request, CancellationToken cancellationToken)
         {
             var dto = request.Dto;
 
-            // 1. جلب قائمة الأسئلة بالكامل من الداتا بيز شاملة الـ Categories لعمل الـ Mapping الموثوق
+            // 1. Get mother's ID from JWT token and retrieve her child profile
+            var motherId = _currentUserService.GetUserId();
+            var childProfile = await _childService.GetProfileByMotherIdAsync(motherId);
+            
+            if (childProfile == null)
+            {
+                return new Response<TestResultResponseDto>
+                {
+                    Succeeded = false,
+                    Message = "Child profile not found for the authenticated mother"
+                };
+            }
+
+            var childId = childProfile.Id;
+
+            // 2. جلب قائمة الأسئلة بالكامل من الداتا بيز شاملة الـ Categories لعمل الـ Mapping الموثوق
             var dbQuestions = await _abilityService.GetAllQuestionsWithCategoriesAsync();
 
             // 2. تجهيز لستة لحساب نتائج الأقسام (Categories)
@@ -206,7 +227,7 @@ namespace Core.Features.AbilitiesTracker.Commands
             // 4. بناء الـ Entity الخاص بالداتا بيز وحفظه
             var testResultEntity = new Data.Entities.AbilitiesTracker.AbilityTestResult
             {
-                ChildId = dto.ChildId,
+                ChildId = childId,
                 TotalScore = totalScore,
                 TotalPercentage = (float)totalPercentage, 
                 Level = riskLevel,

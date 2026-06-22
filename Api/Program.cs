@@ -1,13 +1,357 @@
+// using Microsoft.AspNetCore.Identity;
+
+// using Microsoft.AspNetCore.Localization;
+
+// using Microsoft.AspNetCore.Mvc;
+
+// using Microsoft.AspNetCore.Mvc.Infrastructure;
+// using System.Reflection;
+// using Microsoft.AspNetCore.Mvc.Routing;
+
+// using Microsoft.EntityFrameworkCore;
+
+// using Microsoft.Extensions.Options;
+
+// using Core;
+
+// using Core.Filters;
+
+// using Core.MiddleWare;
+
+// using Api;
+
+// using Data.Entities.Identity;
+
+// using Infrastructure;
+
+// using Infrastructure.Context;
+
+// using Infrastructure.Seeder;
+
+// using Service;
+
+// using Serilog;
+
+// using System.Globalization;
+
+
+
+// var builder = WebApplication.CreateBuilder(args);
+
+
+
+// // Add services to the container.
+
+
+
+// builder.Services.AddControllers();
+
+
+
+// // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+// builder.Services.AddEndpointsApiExplorer();
+
+
+
+// // builder.Services.AddSwaggerGen();
+// builder.Services.AddSwaggerGen(options =>
+// {
+//     // Add custom schema filter to include enum value descriptions
+//     options.SchemaFilter<EnumSchemaFilter>();
+
+//     // 1. قراءة ملف الـ XML الخاص بمشروع الـ Api نفسه
+//     var apiXmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+//     var apiXmlPath = Path.Combine(AppContext.BaseDirectory, apiXmlFile);
+//     if (File.Exists(apiXmlPath))
+//     {
+//         options.IncludeXmlComments(apiXmlPath);
+//     }
+
+//     // 2. قراءة ملف الـ XML الخاص بمشروع الـ Core (طريقة ديناميكية مضمونة)
+//     // نستخدم اسم الكلاس QuestionAnswerDto ليعرف الـ .NET مكان الملف بالضبط
+//     var coreAssembly = typeof(Core.Features.AbilitiesTracker.QuestionAnswerDto).Assembly;
+//     var coreXmlFile = $"{coreAssembly.GetName().Name}.xml";
+//     var coreXmlPath = Path.Combine(AppContext.BaseDirectory, coreXmlFile);
+
+//     if (File.Exists(coreXmlPath))
+//     {
+//         options.IncludeXmlComments(coreXmlPath);
+//     }
+
+//     // 3. قراءة ملف الـ XML الخاص بمشروع الـ Data (للEnums والـ DTOs)
+//     var dataAssembly = typeof(Data.Enums.StudentOrderingEnum).Assembly;
+//     var dataXmlFile = $"{dataAssembly.GetName().Name}.xml";
+//     var dataXmlPath = Path.Combine(AppContext.BaseDirectory, dataXmlFile);
+
+//     if (File.Exists(dataXmlPath))
+//     {
+//         options.IncludeXmlComments(dataXmlPath);
+//     }
+// });
+
+
+
+// ///////
+// builder.Services.AddDbContext<ApplicationDBContext>(option =>
+// {
+//     // اجعله كدة مؤقتاً للتجربة محلياً ورؤية الملف
+//     // إذا كان التطبيق يعمل 
+//     //أونلاين على Railway
+//     if (builder.Environment.IsProduction())
+//     {
+//         option.UseSqlite("Data Source=TestDB.db");
+//     }
+//     else
+//     {
+//         // محلياً يستمر السيرفر في استخدام SQL Server الخاص بجهازك
+//         option.UseSqlServer(builder.Configuration.GetConnectionString("dbcontext"));
+//     }
+// });
+// // اجعله كدة مؤقتاً للتجربة محلياً ورؤية الملف
+// #region Dependency injections
+
+// builder.Services.AddInfrastructureDependencies()
+
+//                  .AddServiceDependencies()
+
+//                  .AddCoreDependencies()
+
+//                  .AddServiceRegisteration(builder.Configuration);
+
+// #endregion
+
+
+
+// #region Localization
+
+// builder.Services.AddControllersWithViews();
+
+// builder.Services.AddLocalization(opt =>
+
+// {
+
+//     opt.ResourcesPath = "";
+
+// });
+
+
+
+// builder.Services.Configure<RequestLocalizationOptions>(options =>
+
+// {
+
+//     List<CultureInfo> supportedCultures = new List<CultureInfo>
+
+//     {
+
+//             new CultureInfo("en-US"),
+
+//             new CultureInfo("de-DE"),
+
+//         //    new CultureInfo("fr-FR"),
+
+//          //   new CultureInfo("ar-EG")
+
+//     };
+
+
+
+//     options.DefaultRequestCulture = new RequestCulture("en-US");
+
+//     options.SupportedCultures = supportedCultures;
+
+//     options.SupportedUICultures = supportedCultures;
+
+// });
+
+
+
+// #endregion
+
+
+
+// #region AllowCORS
+
+// var CORS = "_cors";
+
+// builder.Services.AddCors(options =>
+
+// {
+
+//     options.AddPolicy(name: CORS,
+
+//                       policy =>
+
+//                       {
+
+//                           policy.AllowAnyHeader();
+
+//                           policy.AllowAnyMethod();
+
+//                           policy.AllowAnyOrigin();
+
+//                       });
+
+// });
+
+
+
+// #endregion
+
+
+
+// builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
+
+// builder.Services.AddTransient<IUrlHelper>(x =>
+
+// {
+
+//     var actionContext = x.GetRequiredService<IActionContextAccessor>().ActionContext;
+
+//     var factory = x.GetRequiredService<IUrlHelperFactory>();
+
+// #pragma warning disable CS8604 // Possible null reference argument.
+
+//     return factory.GetUrlHelper(actionContext);
+
+// #pragma warning restore CS8604 // Possible null reference argument.
+
+// });
+
+// builder.Services.AddTransient<AuthFilter>();
+
+// // Register HttpClient for DI (used by AnalyzeChildMotionCommandHandler)
+// builder.Services.AddHttpClient();
+
+// //Serilog
+
+// // Log.Logger=new LoggerConfiguration()
+
+// //               .ReadFrom.Configuration(builder.Configuration).CreateLogger();
+
+// // builder.Services.AddSerilog();
+
+
+
+// var app = builder.Build();
+
+// // using (var scope = app.Services.CreateScope())
+
+// // {
+
+// //     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+
+// //     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
+
+// //     await RoleSeeder.SeedAsync(roleManager);
+
+// //     await UserSeeder.SeedAsync(userManager);
+
+// // }
+
+
+
+
+
+// // Configure the HTTP request pipeline.
+
+// // if (app.Environment.IsDevelopment())
+
+// // {
+
+// //     app.UseSwagger();
+
+// //     app.UseSwaggerUI();
+
+// // }
+
+// app.UseSwagger();
+// app.UseSwaggerUI(c =>
+// {
+//     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Autism Project API V1");
+//     // السطر القادم اختياري: يجعل الـ Swagger يفتح مباشرة بمجرد دخول الرابط الرئيسي بدون كتابة /swagger
+//     c.RoutePrefix = string.Empty; 
+// });
+
+
+
+// #region Localization Middleware
+
+// var options = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
+
+// #pragma warning disable CS8602 // Dereference of a possibly null reference.
+
+// app.UseRequestLocalization(options.Value);
+
+// #pragma warning restore CS8602 // Dereference of a possibly null reference.
+
+// #endregion
+
+
+
+// app.UseMiddleware<ErrorHandlerMiddleware>();
+
+
+
+// app.UseHttpsRedirection();
+
+// app.UseCors(CORS);
+
+// app.UseStaticFiles();
+
+
+
+// app.UseAuthentication();
+
+// app.UseAuthorization();
+
+
+// app.MapControllers();
+
+
+// // Database initialization - apply pending migrations on startup
+// using (var scope = app.Services.CreateScope())
+// {
+//     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDBContext>();
+    
+//     try
+//     {
+//         // Try to apply pending migrations (this creates the ChildProfile table and all other missing tables)
+//         await dbContext.Database.MigrateAsync();
+//     }
+//     catch (Exception ex)
+//     {
+//         Console.WriteLine($"Migration failed: {ex.Message}. Falling back to EnsureCreated...");
+//         // Fallback: create database and tables from the model if migrations cannot be applied
+//         await dbContext.Database.EnsureCreatedAsync();
+//     }
+    
+//     // Seed initial data
+//     await Infrastructure.Seeder.ApplicationDataSeeder.SeedDataAsync(dbContext);
+//     await Infrastructure.Seeder.ApplicationDataSeeder.SeedAsync(scope.ServiceProvider.GetRequiredService<UserManager<User>>());
+//     await Infrastructure.Seeder.ApplicationDataSeeder.SeedFullCommunityDataAsync(dbContext);
+// }
+
+
+
+// var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+// app.Run($"http://0.0.0.0:{port}");
+
+
+
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using System.Reflection;
 using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Core;
 using Core.Filters;
 using Core.MiddleWare;
+using Api;
 using Data.Entities.Identity;
 using Infrastructure;
 using Infrastructure.Context;
@@ -19,49 +363,83 @@ using System.Globalization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
+builder.Services.AddSwaggerGen(options =>
+{
+    // Add custom schema filter to include enum value descriptions
+    options.SchemaFilter<EnumSchemaFilter>();
 
-//dotnet ef migrations add InitialIdentity --context ApplicationDBContext --output-dir Data\Migrations
+    // 1. قراءة ملف الـ XML الخاص بمشروع الـ Api نفسه
+    var apiXmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var apiXmlPath = Path.Combine(AppContext.BaseDirectory, apiXmlFile);
+    if (File.Exists(apiXmlPath))
+    {
+        options.IncludeXmlComments(apiXmlPath);
+    }
+
+    // 2. قراءة ملف الـ XML الخاص بمشروع الـ Core
+    var coreAssembly = typeof(Core.Features.AbilitiesTracker.QuestionAnswerDto).Assembly;
+    var coreXmlFile = $"{coreAssembly.GetName().Name}.xml";
+    var coreXmlPath = Path.Combine(AppContext.BaseDirectory, coreXmlFile);
+    if (File.Exists(coreXmlPath))
+    {
+        options.IncludeXmlComments(coreXmlPath);
+    }
+
+    // 3. قراءة ملف الـ XML الخاص بمشروع الـ Data
+    var dataAssembly = typeof(Data.Enums.StudentOrderingEnum).Assembly;
+    var dataXmlFile = $"{dataAssembly.GetName().Name}.xml";
+    var dataXmlPath = Path.Combine(AppContext.BaseDirectory, dataXmlFile);
+    if (File.Exists(dataXmlPath))
+    {
+        options.IncludeXmlComments(dataXmlPath);
+    }
+});
+
+// 🛠️ تعديل الداتابيز لتتوافق مع MonsterASP.net و الـ Local معاً بذكاء
 builder.Services.AddDbContext<ApplicationDBContext>(option =>
 {
-    option.UseSqlServer(builder.Configuration.GetConnectionString("dbcontext"));
+    // نقرأ الـ Connection String مباشرة. على MonsterASP هتقرأ السيرفر الأونلاين، ومحلياً هتقرأ جهازك
+    var connectionString = builder.Configuration.GetConnectionString("dbcontext");
+    
+    if (string.IsNullOrEmpty(connectionString))
+    {
+        // حل احتياطي فقط في حالة عدم وجود Connection String تماماً (مثل بعض بيئات Railway)
+        option.UseSqlite("Data Source=TestDB.db");
+    }
+    else
+    {
+        option.UseSqlServer(connectionString);
+    }
 });
 
 #region Dependency injections
 builder.Services.AddInfrastructureDependencies()
-                 .AddServiceDependencies()
-                 .AddCoreDependencies()
-                 .AddServiceRegisteration(builder.Configuration);
+                .AddServiceDependencies()
+                .AddCoreDependencies()
+                .AddServiceRegisteration(builder.Configuration);
 #endregion
 
 #region Localization
 builder.Services.AddControllersWithViews();
-builder.Services.AddLocalization(opt =>
-{
-    opt.ResourcesPath = "";
-});
+builder.Services.AddLocalization(opt => { opt.ResourcesPath = ""; });
 
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
     List<CultureInfo> supportedCultures = new List<CultureInfo>
     {
-            new CultureInfo("en-US"),
-            new CultureInfo("de-DE"),
-            new CultureInfo("fr-FR"),
-            new CultureInfo("ar-EG")
+        new CultureInfo("en-US"),
+        new CultureInfo("de-DE")
     };
 
     options.DefaultRequestCulture = new RequestCulture("en-US");
     options.SupportedCultures = supportedCultures;
     options.SupportedUICultures = supportedCultures;
 });
-
 #endregion
 
 #region AllowCORS
@@ -76,7 +454,6 @@ builder.Services.AddCors(options =>
                           policy.AllowAnyOrigin();
                       });
 });
-
 #endregion
 
 builder.Services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
@@ -84,45 +461,38 @@ builder.Services.AddTransient<IUrlHelper>(x =>
 {
     var actionContext = x.GetRequiredService<IActionContextAccessor>().ActionContext;
     var factory = x.GetRequiredService<IUrlHelperFactory>();
-#pragma warning disable CS8604 // Possible null reference argument.
+#pragma warning disable CS8604 
     return factory.GetUrlHelper(actionContext);
-#pragma warning restore CS8604 // Possible null reference argument.
+#pragma warning restore CS8604 
 });
 builder.Services.AddTransient<AuthFilter>();
 
-//Serilog
-// Log.Logger=new LoggerConfiguration()
-//               .ReadFrom.Configuration(builder.Configuration).CreateLogger();
-// builder.Services.AddSerilog();
+// Register HttpClient for DI (used by AnalyzeChildMotionCommandHandler)
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
-using (var scope = app.Services.CreateScope())
-{
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
-    await RoleSeeder.SeedAsync(roleManager);
-    await UserSeeder.SeedAsync(userManager);
-}
 
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// 🚀 تفعيل الـ Swagger ليعمل أونلاين ومحلياً على الدومين الرئيسي مباشرة لمنع خطأ 403
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Autism Project API V1");
+    c.RoutePrefix = string.Empty; // يجعل الـ Swagger يفتح فوراً عند كتابة autismsupport.runasp.net
+});
 
 #region Localization Middleware
 var options = app.Services.GetService<IOptions<RequestLocalizationOptions>>();
-#pragma warning disable CS8602 // Dereference of a possibly null reference.
+#pragma warning disable CS8602 
 app.UseRequestLocalization(options.Value);
-#pragma warning restore CS8602 // Dereference of a possibly null reference.
+#pragma warning restore CS8602 
 #endregion
 
 app.UseMiddleware<ErrorHandlerMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseCors(CORS);
+
+// تفعيل الملفات الثابتة لضمان قراءة وتحميل فيديوهات الأطفال المرفوعة
 app.UseStaticFiles();
 
 app.UseAuthentication();
@@ -130,15 +500,28 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+// 🚀 تشغيل الـ Seeder وضمان بناء الجداول تلقائياً في كل البيئات (Local & Production)
+using (var scope = app.Services.CreateScope())
+{
+    try
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDBContext>();
+        
+        // إنشاء الداتابيز والجداول أونلاين تلقائياً لو مش موجودة بدون Migrations يدوي
+        await dbContext.Database.EnsureCreatedAsync(); 
+        
+        // فرش البيانات الأساسية
+        await Infrastructure.Seeder.ApplicationDataSeeder.SeedDataAsync(dbContext);
+        await Infrastructure.Seeder.ApplicationDataSeeder.SeedAsync(scope.ServiceProvider.GetRequiredService<UserManager<User>>());
+        await Infrastructure.Seeder.ApplicationDataSeeder.SeedFullCommunityDataAsync(dbContext);
+    }
+    catch (Exception ex)
+    {
+        // منع السيرفر من الكراش في حالة وجود خطأ بالـ Seeder وطباعته في الـ Console
+        Console.WriteLine($"Seeding Error: {ex.Message}");
+    }
+}
 
-
-// select * from [dbo].[AspNetUserLogins]
-// select * from [dbo].[AspNetUserTokens]
-// select * from [dbo].[UserRefreshToken]
-// select * from [dbo].[AspNetRoles]
-// select * from [dbo].[AspNetUsers]
-// delete [AspNetUsers] where Id=7
-
-// --eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4zIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZWlkZW50aWZpZXIiOiJhZG1pbjMiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJteW95YTYyOUBnbWFpbC5jb20iLCJQaG9uZU51bWJlciI6IjAxMDk4NzY1NDMyIiwiSWQiOiI4IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTc3NTAyMDYyMywiaXNzIjoiU2Nob29sUHJvamVjdCIsImF1ZCI6IldlYlNpdGUifQ.FgvWcNjV0pIfP93tRYmU4y2olT3cTpHgY33zoI9g9AU
-// --eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiYWRtaW4zIiwiaHR0cDovL3NjaGVtYXMueG1sc29hcC5vcmcvd3MvMjAwNS8wNS9pZGVudGl0eS9jbGFpbXMvbmFtZWlkZW50aWZpZXIiOiJhZG1pbjMiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJteW95YTYyOUBnbWFpbC5jb20iLCJQaG9uZU51bWJlciI6IjAxMDk4NzY1NDMyIiwiSWQiOiI4IiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiVXNlciIsImV4cCI6MTc3NTAyMDYyMywiaXNzIjoiU2Nob29sUHJvamVjdCIsImF1ZCI6IldlYlNpdGUifQ.FgvWcNjV0pIfP93tRYmU4y2olT3cTpHgY33zoI9g9AU
+// إعدادات البورت المتوافقة مع السيرفرات السحابية ومحلية
+var port = Environment.GetEnvironmentVariable("PORT") ?? "5000";
+app.Run($"http://0.0.0.0:{port}");

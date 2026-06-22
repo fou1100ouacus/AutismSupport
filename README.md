@@ -481,7 +481,7 @@ Hosting: Azure / AWS.
 Key Entities:
 
 Users: Id, Email, Role, DisclaimerAcceptedAt, IsActive.
-ChildProfiles: Id, UserId, Nickname, AgeYears, AgeMonths, Challenges (JSON).
+ChildProfile: Id, UserId, Nickname, AgeYears, AgeMonths, Challenges (JSON).
 TrackingEntries: Id, ChildId, Date, Data (JSON).
 Posts/Comments: Status (Pending/Approved/Rejected), Content.
 
@@ -656,7 +656,7 @@ Users
 ├── DisclaimerAcceptedAt
 ├── IsActive
 
-ChildProfiles
+ChildProfile
 ├── Id (PK)
 ├── UserId (FK)
 ├── Nickname

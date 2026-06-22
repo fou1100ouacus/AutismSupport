@@ -20,8 +20,8 @@ namespace Infrastructure.Repositories
 
         public async Task<ChildProfile?> GetByMotherIdAsync(int motherId)
         {
-            Console.WriteLine($"DEBUG: Repository querying ChildProfiles for MotherId: {motherId}");
-            var result = await _dbContext.ChildProfiles
+            Console.WriteLine($"DEBUG: Repository querying ChildProfile for MotherId: {motherId}");
+            var result = await _dbContext.ChildProfile
                 .FirstOrDefaultAsync(c => c.MotherId == motherId);
             Console.WriteLine($"DEBUG: Repository query result for MotherId {motherId}: {result != null}");
             return result;
@@ -29,7 +29,7 @@ namespace Infrastructure.Repositories
 
         public async Task<bool> MotherHasProfileAsync(int motherId)
         {
-            return await _dbContext.ChildProfiles
+            return await _dbContext.ChildProfile
                 .AnyAsync(c => c.MotherId == motherId);
         }
     }
