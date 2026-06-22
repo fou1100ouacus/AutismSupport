@@ -28,7 +28,7 @@ RUN dotnet build "Api.csproj" -c $configuration -o /app/build
 # 5. عمل نشر (Publish) مع إجبار استخدام فراموورك net10.0 لمنع البحث عن إصدارات قديمة
 FROM build AS publish
 ARG configuration=Release
-RUN dotnet publish "Api.csproj" -c $configuration -f net10.0 -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Api.csproj" -c $configuration -f net8.0 -o /app/publish /p:UseAppHost=false
 
 # 6. المرحلة النهائية لتشغيل التطبيق
 FROM base AS final

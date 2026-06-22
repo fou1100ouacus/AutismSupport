@@ -32,7 +32,7 @@ namespace Service.Implementations
         public async Task<(List<CommunityPost> Items, int TotalCount)> GetFeedAsync(int pageNumber, int pageSize) =>
             await _postRepo.GetApprovedFeedAsync(pageNumber, pageSize);
 
-        public async Task<CommunityPost> CreateAsync(string content, string photoUrl, int userId)
+        public async Task<CommunityPost> CreateAsync(string content, string? photoUrl, int userId)
         {
             if (KeywordBlocklist.ContainsForbiddenWords(content))
                 throw new InvalidOperationException("ContentContainsForbiddenMedicalTerms");
@@ -197,6 +197,12 @@ namespace Service.Implementations
                     }
                 }
             }
+        }
+
+        public async Task<bool> HasUserReactedAsync(int userId, ReactionTargetType targetType, int targetId)
+        {
+            var existing = await _reactionRepo.GetUserReactionAsync(userId, targetType, targetId);
+            return existing != null;
         }
     }
 
