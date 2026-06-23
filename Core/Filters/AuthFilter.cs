@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-using Microsoft.AspNetCore.Identity;
-
 using Microsoft.AspNetCore.Mvc;
 
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -21,8 +19,6 @@ namespace Core.Filters
     {
 
         private readonly ICurrentUserService _currentUserService;
-
-        private readonly UserManager<User> _userManager;
 
         public AuthFilter(ICurrentUserService currentUserService)
 

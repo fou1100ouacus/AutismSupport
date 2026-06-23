@@ -31,6 +31,7 @@ namespace Core.Features.Authorization.Commands.Handlers
         {
             var result = await _authorizationService.AddRoleAsync(request.RoleName);
             if (result=="Success") return Success("");
+            if (result=="RoleNameAlreadyExists") return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.IsExist]);
             return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.AddFailed]);
         }
 
@@ -39,6 +40,7 @@ namespace Core.Features.Authorization.Commands.Handlers
             var result = await _authorizationService.EditRoleAsync(request);
             if (result=="notFound") return NotFound<string>();
             else if (result=="Success") return Success((string)_stringLocalizer[SharedResourcesKeys.Updated]);
+            else if (result=="RoleNameAlreadyExists") return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.IsExist]);
             else
                 return BadRequest<string>(result);
         }

@@ -34,6 +34,9 @@ namespace Service.Implementations
         #region handle Functions
         public async Task<string> AddRoleAsync(string roleName)
         {
+            //check if role already exists
+            if (await _roleManager.RoleExistsAsync(roleName))
+                return "RoleNameAlreadyExists";
             var identityRole = new Role();
             identityRole.Name = roleName;
             var result = await _roleManager.CreateAsync(identityRole);
@@ -55,6 +58,9 @@ namespace Service.Implementations
             var role = await _roleManager.FindByIdAsync(request.Id.ToString());
             if (role == null)
                 return "notFound";
+            //check if new name already exists for another role
+            if (role.Name != request.Name && await _roleManager.RoleExistsAsync(request.Name))
+                return "RoleNameAlreadyExists";
             role.Name= request.Name;
             var result = await _roleManager.UpdateAsync(role);
             if (result.Succeeded) return "Success";
@@ -197,7 +203,7 @@ namespace Service.Implementations
                 var removeClaimsResult = await _userManager.RemoveClaimsAsync(user, userClaims);
                 if (!removeClaimsResult.Succeeded)
                     return "FailedToRemoveOldClaims";
-                var claims = request.userClaims.Where(x => x.Value==true).Select(x => new Claim(x.Type, x.Value.ToString()));
+                var claims = request.userClaims.Where(x => x.Value==true).Select(x => new Claim(x.Type, "true"));
 
                 var addUserClaimResult = await _userManager.AddClaimsAsync(user, claims);
                 if (!addUserClaimResult.Succeeded)

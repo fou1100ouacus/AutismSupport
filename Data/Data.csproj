@@ -12,6 +12,7 @@
     <PackageReference Include="EntityFrameworkCore.EncryptColumn" Version="6.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.Identity.Stores" Version="7.0.20" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.9.0" />
   </ItemGroup>
 
 </Project>

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Localization;
 using Core.Features.Authorization.Commands.Models;
 using Core.Resources;
+using Service.Abstracts;
 
 namespace Core.Features.Authorization.Commands.Validators
 {
@@ -9,13 +10,16 @@ namespace Core.Features.Authorization.Commands.Validators
     {
         #region Fields
         private readonly IStringLocalizer<SharedResources> _stringLocalizer;
+        private readonly IAuthorizationService _authorizationService;
         #endregion
         #region Constructors
 
         #endregion
-        public EditRoleValidator(IStringLocalizer<SharedResources> stringLocalizer)
+        public EditRoleValidator(IStringLocalizer<SharedResources> stringLocalizer,
+                                  IAuthorizationService authorizationService)
         {
             _stringLocalizer = stringLocalizer;
+            _authorizationService = authorizationService;
             ApplyValidationsRules();
             ApplyCustomValidationsRules();
         }
@@ -34,7 +38,15 @@ namespace Core.Features.Authorization.Commands.Validators
 
         public void ApplyCustomValidationsRules()
         {
-
+            RuleFor(x => x.Name)
+                .MustAsync(async (command, name, cancellationToken) => 
+                {
+                    var role = await _authorizationService.GetRoleById(command.Id);
+                    if (role == null) return true;
+                    if (role.Name == name) return true;
+                    return !await _authorizationService.IsRoleExistByName(name);
+                })
+                .WithMessage(_stringLocalizer[SharedResourcesKeys.IsExist]);
         }
 
         #endregion

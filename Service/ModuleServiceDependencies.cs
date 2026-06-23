@@ -10,7 +10,6 @@ namespace Service
     {
         public static IServiceCollection AddServiceDependencies(this IServiceCollection services)
         {
-            services.AddTransient<IStudentService, StudentService>();
             services.AddTransient<IAuthenticationService, AuthenticationService>();
             services.AddTransient<IAuthorizationService, AuthorizationService>();
             services.AddTransient<IEmailsService, EmailsService>();

@@ -87,6 +87,7 @@ namespace Infrastructure.Configurations
             builder.HasOne(x => x.Post)
                    .WithMany(p => p.Reports)
                    .HasForeignKey(x => x.PostId)
+                   .IsRequired(false)
                    .OnDelete(DeleteBehavior.Restrict);
         }
     }

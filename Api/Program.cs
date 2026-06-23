@@ -1,32 +1,6 @@
-// // using Microsoft.AspNetCore.Identity;
-
-// // using Microsoft.AspNetCore.Localization;
-
-// // using Microsoft.AspNetCore.Mvc;
-
-// // using Microsoft.AspNetCore.Mvc.Infrastructure;
-// // using System.Reflection;
-// // using Microsoft.AspNetCore.Mvc.Routing;
-
-// // using Microsoft.EntityFrameworkCore;
-
-// // using Microsoft.Extensions.Options;
-
-// // using Core;
-
-// // using Core.Filters;
-
-// // using Core.MiddleWare;
-
-// // using Api;
-
-// // using Data.Entities.Identity;
-
-// // using Infrastructure;
-
-// // using Infrastructure.Context;
-
-// // using Infrastructure.Seeder;
+using Microsoft.AspNetCore.Identity;
+using Infrastructure.Seeder;
+using Data.Entities.Identity;
 
 // // using Service;
 
@@ -655,8 +629,17 @@ builder.Services.AddHttpClient();
 
 var app = builder.Build();
 
-// 🚀 التعديل السحري: تفعيل الـ Swagger في كل البيئات (Development & Production)
-// لكي يفتح عند فريق الـ Frontend وبأي متصفح أونلاين فوراً
+// Seed admin user and roles
+// using (var scope = app.Services.CreateScope())
+// {
+//     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+//     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<Role>>();
+//     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDBContext>();
+//     await RoleSeeder.SeedAsync(roleManager);
+//     await UserSeeder.SeedAsync(userManager);
+//     await ApplicationDataSeeder.SeedDataAsync(dbContext);
+// }
+
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
@@ -685,5 +668,4 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// 🚀 التعديل الجوهري: إعداد بورت السيرفر بشكل ديناميكي لمنع الانهيار (Crash) أونلاين
 app.Run();

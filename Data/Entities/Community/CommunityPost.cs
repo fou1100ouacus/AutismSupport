@@ -7,7 +7,7 @@ namespace Data.Entities.Community
     {
         public int Id { get; set; }
         public int UserId { get; set; }
-        public string Content { get; set; }
+        public string Content { get; set; } = string.Empty;
         public string? PhotoUrl { get; set; }
         public PostStatus Status { get; set; } = PostStatus.Pending;
         public string? ModerationNote { get; set; }

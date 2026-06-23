@@ -31,9 +31,9 @@ namespace Core.Features.Authorization.Commands.Validators
         }
         public void ApplyCustomValidationsRules()
         {
-            //RuleFor(x => x.Id)
-            //    .MustAsync(async (Key, CancellationToken) => await _authorizationService.IsRoleExistById(Key))
-            //    .WithMessage(_stringLocalizer[SharedResourcesKeys.RoleNotExist]);
+            RuleFor(x => x.Id)
+                .MustAsync(async (Key, CancellationToken) => await _authorizationService.IsRoleExistById(Key))
+                .WithMessage(_stringLocalizer[SharedResourcesKeys.RoleNotExist]);
         }
         #endregion
     }
