@@ -364,3 +364,8 @@ FodyWeavers.xsd
 # Ignore the local publish folder
 site_publish/
 site_publish*
+
+# Ignore all uploads and static files in wwwroot
+src/wwwroot/
+wwwroot/
+

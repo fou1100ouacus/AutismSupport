@@ -4,6 +4,7 @@ using Infrastructure.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20260624221155_AddSegmentsJsonToMotionAnalysisResult")]
+    partial class AddSegmentsJsonToMotionAnalysisResult
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -131,13 +134,13 @@ namespace Infrastructure.Data.Migrations
                         .HasColumnType("nvarchar(250)");
 
                     b.Property<string>("SegmentsJson")
-                        .HasMaxLength(4000)
-                        .HasColumnType("nvarchar(4000)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<decimal?>("SmmPercentage")
+                    b.Property<decimal>("SmmPercentage")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int?>("SmmSegmentsCount")
+                    b.Property<int>("SmmSegmentsCount")
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
@@ -147,10 +150,7 @@ namespace Infrastructure.Data.Migrations
                         .HasColumnType("nvarchar(50)")
                         .HasDefaultValue("Pending");
 
-                    b.Property<int?>("TotalSegments")
-                        .HasColumnType("int");
-
-                    b.Property<decimal?>("VideoDuration")
+                    b.Property<decimal>("VideoDuration")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("VideoUrl")

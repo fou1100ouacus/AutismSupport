@@ -30,18 +30,25 @@ namespace Infrastructure.Configurations
                 .IsRequired(false); // يمكن أن يكون Null في البداية حتى ينتهي الـ AI
 
             builder.Property(x => x.SmmPercentage)
-                .IsRequired()
+                .IsRequired(false)
                 .HasColumnType("decimal(18,2)"); // تحديد نوع عشري دقيق للنسبة المئوية لـ SQL Server
 
             builder.Property(x => x.SmmSegmentsCount)
-                .IsRequired();
+                .IsRequired(false);
+
+            builder.Property(x => x.TotalSegments)
+                .IsRequired(false);
 
             builder.Property(x => x.VideoDuration)
-                .IsRequired()
+                .IsRequired(false)
                 .HasColumnType("decimal(18,2)");
 
             builder.Property(x => x.CreatedAt)
                 .IsRequired();
+
+            builder.Property(x => x.SegmentsJson)
+                .IsRequired(false)
+                .HasMaxLength(4000); // JSON string for segments
 
             // 4️⃣ 👶 إعداد الـ Foreign Key والعلاقة مع جدول الطفل (Child)
             // العلاقة: الطفل الواحد يمكن أن يكون له عدة تحليلات حركية (One-to-Many)

@@ -1,18 +1,19 @@
-using Api.Base; // عدلي الـ namespace للـ Base Controller الخاص بمشروعك
+using Api.Base;
 using Core.Features.AbilitiesTracker.MotionAnalysis.Commands.Models;
+using Data.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Context;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Text.Json;
 
 namespace Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize] //
+    [Authorize]
     public class MotionAnalysisController : AppControllerBase
     {
         private readonly ApplicationDBContext _context;
@@ -22,30 +23,13 @@ namespace Api.Controllers
             _context = context;
         }
 
-        // 1. الـ Endpoint الأول: رفع الفيديو (يستنتج الطفل تلقائياً ويرد بـ ID السجل فوراً)
+        // 1. الـ Endpoint الأول: رفع الفيديو (يستنتج الطفل تلقائياً من الـ Token في الـ Handler)
         [HttpPost("analyze")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> AnalyzeMotion([FromForm] AnalyzeChildMotionCommand command)
         {
             if (command.VideoFile == null || command.VideoFile.Length == 0)
                 return BadRequest("Please provide a valid video file.");
-
-            // 🕵️‍♂️ سحب الـ User ID الخاص بالأم من الـ Token Claims مستخدمة الـ Identity
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userIdClaim)) return Unauthorized("User context not found.");
-            int motherUserId = int.Parse(userIdClaim);
-
-            // 👶 جلب الـ ChildId المرتبط بحساب هذه الأم من الـ SQL Server تلقائياً
-            var childId = await _context.ChildProfile
-                .Where(c => c.MotherId == motherUserId)
-                .Select(c => c.Id)
-                .FirstOrDefaultAsync();
-
-            if (childId == 0) 
-                return BadRequest("No registered child found for this account. Please add a child profile first.");
-
-            // 🎯 حقن الـ ChildId داخل الـ Command قبل إرساله للـ Handler
-            command.AutomatedChildId = childId;
 
             var analysisId = await Mediator.Send(command);
             return Ok(new { 
@@ -58,19 +42,48 @@ namespace Api.Controllers
         [HttpGet("status/{id}")]
         public async Task<IActionResult> GetStatus(int id)
         {
-            var result = await _context.MotionAnalysisResults
+            var record = await _context.MotionAnalysisResults
                 .Where(r => r.Id == id)
-                .Select(r => new {
-                    r.Status,       // سيعود بـ (Pending, Processing, Completed, Failed)
-                    r.Prediction,   // النص النهائي للتصنيف
-                    r.SmmPercentage,
-                    r.SmmSegmentsCount,
-                    r.VideoDuration
-                })
                 .FirstOrDefaultAsync();
 
-            if (result == null) return NotFound("Analysis record not found.");
-            return Ok(result);
+            if (record == null) return NotFound("Analysis record not found.");
+
+            // Build response in the format matching AI server response
+            var response = new MotionAnalysisResponseDto
+            {
+                Report = new ReportDto
+                {
+                    SmmPercentage = record.SmmPercentage ?? 0,
+                    SmmSegmentsCount = record.SmmSegmentsCount ?? 0,
+                    TotalSegments = record.TotalSegments ?? 0,
+                    VideoDurationSeconds = record.VideoDuration ?? 0
+                },
+                Segments = new List<SegmentDto>()
+            };
+
+            // Deserialize segments if available
+            if (!string.IsNullOrEmpty(record.SegmentsJson))
+            {
+                try
+                {
+                    response.Segments = JsonSerializer.Deserialize<List<SegmentDto>>(record.SegmentsJson, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    }) ?? new List<SegmentDto>();
+                }
+                catch
+                {
+                    response.Segments = new List<SegmentDto>();
+                }
+            }
+
+            return Ok(new
+            {
+                record.Status,
+                record.Prediction,
+                report = response.Report,
+                segments = response.Segments
+            });
         }
     }
 }

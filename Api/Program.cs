@@ -626,6 +626,7 @@ builder.Services.AddTransient<IUrlHelper>(x =>
 builder.Services.AddTransient<AuthFilter>();
 
 builder.Services.AddHttpClient();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 

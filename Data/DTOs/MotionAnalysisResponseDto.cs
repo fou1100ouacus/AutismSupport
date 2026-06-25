@@ -1,27 +1,14 @@
-using MediatR;
-using Microsoft.AspNetCore.Http;
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
-namespace Core.Features.AbilitiesTracker.MotionAnalysis.Commands.Models
+namespace Data.DTOs
 {
-    // 1. الـ Request القادم من الـ Controller (يستقبل الفيديو فقط من الفرونت إند)
-    public class AnalyzeChildMotionCommand : IRequest<int>
+    public class MotionAnalysisResponseDto
     {
-        public IFormFile VideoFile { get; set; }
+        public ReportDto Report { get; set; }
+        public List<SegmentDto> Segments { get; set; }
     }
 
-    // 2. الموديلات المطابقة تماماً للـ JSON الراجع من خادم الـ AI على Hugging Face
-    public class HuggingFaceAiResponse
-    {
-        [JsonPropertyName("report")]
-        public AiReportDto Report { get; set; }
-        
-        [JsonPropertyName("segments")]
-        public List<AiSegmentDto> Segments { get; set; }
-    }
-
-    public class AiReportDto
+    public class ReportDto
     {
         [JsonPropertyName("smm_percentage")]
         public double SmmPercentage { get; set; }
@@ -36,7 +23,7 @@ namespace Core.Features.AbilitiesTracker.MotionAnalysis.Commands.Models
         public double VideoDurationSeconds { get; set; }
     }
 
-    public class AiSegmentDto
+    public class SegmentDto
     {
         [JsonPropertyName("start_time")]
         public double StartTime { get; set; }

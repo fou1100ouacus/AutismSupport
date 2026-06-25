@@ -17,9 +17,11 @@ namespace Data.Entities.AbilitiesTracker
         public string Status { get; set; } = "Pending"; 
         
         public string Prediction { get; set; } // النتيجة النصية النهائية (مثل: Normal Motion Activity)
-        public double SmmPercentage { get; set; } // نسبة الحركات النمطية القادمة من الـ AI
-        public int SmmSegmentsCount { get; set; } // عدد المقاطع المكتشفة
-        public double VideoDuration { get; set; } // مدة الفيديو بالثواني
+        public double? SmmPercentage { get; set; } // نسبة الحركات النمطية القادمة من الـ AI
+        public int? SmmSegmentsCount { get; set; } // عدد المقاطع المكتشفة
+        public int? TotalSegments { get; set; } // إجمالي عدد المقاطع
+        public double? VideoDuration { get; set; } // مدة الفيديو بالثواني
+        public string SegmentsJson { get; set; } // تخزين المقاطع كـ JSON
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }
