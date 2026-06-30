@@ -203,25 +203,21 @@ namespace Core.Features.Authentication.Commands.Handlers
 
 
         public async Task<Response<string>> Handle(ResetPasswordCommand request, CancellationToken cancellationToken)
-
         {
+            // Validate password confirmation
+            if (request.Password != request.ConfirmPassword)
+                return BadRequest<string>("Passwords do not match");
 
-            var result = await _authenticationService.ResetPassword(request.Email, request.Password);
+            var result = await _authenticationService.ResetPasswordWithCode(request.Email, request.Code, request.Password);
 
             switch (result)
-
             {
-
                 case "UserNotFound": return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.UserIsNotFound]);
-
-                case "Failed": return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.InvaildCode]);
-
-                case "Success": return Success<string>("");
-
-                default: return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.InvaildCode]);
-
+                case "InvalidCode": return BadRequest<string>("Invalid or expired code");
+                case "Failed": return BadRequest<string>("Failed to reset password");
+                case "Success": return Success<string>("Password reset successfully");
+                default: return BadRequest<string>("Failed to reset password");
             }
-
         }
 
 

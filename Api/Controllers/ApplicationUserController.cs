@@ -61,5 +61,12 @@ namespace Api.Controllers
             var response = await Mediator.Send(command);
             return NewResult(response);
         }
+        [Authorize]
+        [HttpGet(Router.ApplicationUserRouting.GetMotherProfile)]
+        public async Task<IActionResult> GetMotherProfile()
+        {
+            var response = await Mediator.Send(new GetMotherProfileQuery());
+            return NewResult(response);
+        }
     }
 }

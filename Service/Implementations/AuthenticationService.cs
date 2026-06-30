@@ -281,11 +281,65 @@ namespace Service.Implementations
                 //user not Exist => not found
                 if (user==null)
                     return "UserNotFound";
-                await _userManager.RemovePasswordAsync(user);
-                if (!await _userManager.HasPasswordAsync(user))
+                
+                // Check if user has a password and remove it
+                if (await _userManager.HasPasswordAsync(user))
                 {
-                    await _userManager.AddPasswordAsync(user, Password);
+                    await _userManager.RemovePasswordAsync(user);
                 }
+                
+                // Add the new password
+                var result = await _userManager.AddPasswordAsync(user, Password);
+                if (!result.Succeeded)
+                {
+                    await trans.RollbackAsync();
+                    return "Failed";
+                }
+                
+                await trans.CommitAsync();
+                return "Success";
+            }
+            catch (Exception ex)
+            {
+                await trans.RollbackAsync();
+                return "Failed";
+            }
+        }
+
+        public async Task<string> ResetPasswordWithCode(string Email, string Code, string Password)
+        {
+            var trans = await _applicationDBContext.Database.BeginTransactionAsync();
+            try
+            {
+                // Get User
+                var user = await _userManager.FindByEmailAsync(Email);
+                // User not exist => not found
+                if (user == null)
+                    return "UserNotFound";
+
+                // Verify the code
+                var userCode = user.Code;
+                if (userCode != Code)
+                    return "InvalidCode";
+
+                // Check if user has a password and remove it
+                if (await _userManager.HasPasswordAsync(user))
+                {
+                    await _userManager.RemovePasswordAsync(user);
+                }
+
+                // Add the new password
+                var result = await _userManager.AddPasswordAsync(user, Password);
+                if (!result.Succeeded)
+                {
+                    await trans.RollbackAsync();
+                    return "Failed";
+                }
+
+                // Clear the code after successful reset
+                user.Code = null;
+                await _userManager.UpdateAsync(user);
+
                 await trans.CommitAsync();
                 return "Success";
             }
