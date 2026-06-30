@@ -101,7 +101,7 @@ namespace Api.Controllers
 {
     /// <summary>
     /// Controller for managing child profile operations.
-    /// Provides endpoints for creating, retrieving, and updating child profiles.
+    /// Provides endpoints for creating, retrieving, updating, and deleting child profiles.
     /// All endpoints require authentication.
     /// </summary>
     [Route("api/child-profiles")]
@@ -175,6 +175,27 @@ namespace Api.Controllers
         public async Task<IActionResult> UpdateProfile([FromBody] CreateChildProfileDto dto)
         {
             return NewResult(await Mediator.Send(new UpdateChildProfileCommand { Dto = dto }));
+        }
+
+        /// <summary>
+        /// Deletes the child profile for the authenticated user.
+        /// </summary>
+        /// <returns>
+        /// A response indicating the result of the deletion.
+        /// Returns 200 OK on success, or appropriate error status on failure.
+        /// </returns>
+        /// <response code="200">Profile deleted successfully</response>
+        /// <response code="401">User not authenticated</response>
+        /// <response code="404">Profile not found</response>
+        /// <response code="500">Internal server error</response>
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteProfile()
+        {
+            return NewResult(await Mediator.Send(new DeleteChildProfileCommand()));
         }
     }
 }

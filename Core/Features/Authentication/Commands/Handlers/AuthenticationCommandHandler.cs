@@ -1,4 +1,4 @@
-﻿
+
 using MediatR;
 
 using Microsoft.AspNetCore.Identity;
@@ -121,12 +121,6 @@ namespace Core.Features.Authentication.Commands.Handlers
                 return BadRequest<JwtAuthResult>(_stringLocalizer[SharedResourcesKeys.PasswordNotCorrect]);
 
             }
-
-            //confirm email
-
-            if (!user.EmailConfirmed)
-
-                return BadRequest<JwtAuthResult>(_stringLocalizer[SharedResourcesKeys.EmailNotConfirmed]);
 
             //Generate Token
 

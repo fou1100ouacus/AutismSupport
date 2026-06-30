@@ -204,7 +204,7 @@ namespace Core.Features.AbilitiesTracker.MotionAnalysis.Commands.Handlers
                                 trackedRecord.TotalSegments = result.Report.TotalSegments;
                                 trackedRecord.VideoDuration = result.Report.VideoDurationSeconds;
                                 trackedRecord.Prediction = result.Report.SmmPercentage > 50.0 
-                                    ? "High Stereotypic Linear Motion Detected" 
+                                    ? "High Stereotypic Motion Detected" 
                                     : "Normal Motion Activity";
                                 
                                 // Serialize segments to JSON and store in database

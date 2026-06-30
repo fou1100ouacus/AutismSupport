@@ -23,7 +23,7 @@ namespace Core.Features.Authentication.Queries.Validators
         #region Actions
         public void ApplyValidationsRules()
         {
-            RuleFor(x => x.UserId)
+            RuleFor(x => x.Email)
                  .NotEmpty().WithMessage(_localizer[SharedResourcesKeys.NotEmpty])
                  .NotNull().WithMessage(_localizer[SharedResourcesKeys.Required]);
 

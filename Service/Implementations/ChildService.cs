@@ -53,6 +53,19 @@ namespace Service.Implementations
                 return "Failed";
             }
         }
+
+        public async Task<string> DeleteChildProfileAsync(ChildProfile childProfile)
+        {
+            try
+            {
+                await _childProfileRepository.DeleteAsync(childProfile);
+                return "Success";
+            }
+            catch (Exception)
+            {
+                return "Failed";
+            }
+        }
         
     }
 }

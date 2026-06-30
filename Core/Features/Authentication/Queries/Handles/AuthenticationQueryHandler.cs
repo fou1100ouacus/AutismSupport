@@ -42,7 +42,7 @@ namespace Core.Features.Authentication.Queries.Handles
 
         public async Task<Response<string>> Handle(ConfirmEmailQuery request, CancellationToken cancellationToken)
         {
-            var confirmEmail = await _authenticationService.ConfirmEmail(request.UserId, request.Code);
+            var confirmEmail = await _authenticationService.ConfirmEmail(request.Email, request.Code);
             if (confirmEmail=="ErrorWhenConfirmEmail")
                 return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.ErrorWhenConfirmEmail]);
             return Success<string>(_stringLocalizer[SharedResourcesKeys.ConfirmEmailDone]);

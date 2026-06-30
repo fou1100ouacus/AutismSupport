@@ -207,11 +207,13 @@ namespace Service.Implementations
             return (userId, expirydate);
         }
 
-        public async Task<string> ConfirmEmail(int? userId, string? code)
+        public async Task<string> ConfirmEmail(string email, string? code)
         {
-            if (userId==null||code==null)
+            if (string.IsNullOrEmpty(email)||code==null)
                 return "ErrorWhenConfirmEmail";
-            var user = await _userManager.FindByIdAsync(userId.ToString());
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                return "ErrorWhenConfirmEmail";
             var confirmEmail = await _userManager.ConfirmEmailAsync(user, code);
             if (!confirmEmail.Succeeded)
                 return "ErrorWhenConfirmEmail";

@@ -7,5 +7,6 @@ namespace Service.Abstracts
         Task<bool> IsMotherHasProfileAsync(int motherId);
         Task<ChildProfile?> GetProfileByMotherIdAsync(int motherId);
         Task<string> UpdateChildProfileAsync(ChildProfile childProfile);
+        Task<string> DeleteChildProfileAsync(ChildProfile childProfile);
     }
 }
