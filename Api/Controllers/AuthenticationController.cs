@@ -43,12 +43,12 @@ namespace Api.Controllers
             var response = await Mediator.Send(command);
             return NewResult(response);
         }
-        [HttpGet(Router.Authentication.ConfirmResetPasswordCode)]
-        public async Task<IActionResult> ConfirmResetPassword([FromQuery] ConfirmResetPasswordQuery query)
-        {
-            var response = await Mediator.Send(query);
-            return NewResult(response);
-        }
+        // [HttpGet(Router.Authentication.ConfirmResetPasswordCode)]
+        // public async Task<IActionResult> ConfirmResetPassword([FromQuery] ConfirmResetPasswordQuery query)
+        // {
+        //     var response = await Mediator.Send(query);
+        //     return NewResult(response);
+        // }
         [HttpPost(Router.Authentication.ResetPassword)]
         public async Task<IActionResult> ResetPassword([FromForm] ResetPasswordCommand command)
         {

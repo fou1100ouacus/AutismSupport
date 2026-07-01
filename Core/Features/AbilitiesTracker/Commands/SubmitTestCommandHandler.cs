@@ -50,6 +50,7 @@ namespace Core.Features.AbilitiesTracker.Commands
             // 2. تجهيز لستة لحساب نتائج الأقسام (Categories)
             var categoryGroups = dbQuestions.GroupBy(q => q.Category.NameEn);
             var observedBehaviors = new List<CategoryScoreDto>();
+            var testRecommendations = new List<string>();
             int totalScore = 0;
 
             // 🛠️ تعديل: حساب أعلى درجة ممكنة بناءً على عدد الأسئلة المبعوثة فعلياً من الـ Frontend (مثلاً 15 سؤال)
@@ -86,6 +87,33 @@ namespace Core.Features.AbilitiesTracker.Commands
                         CategoryScore = categoryScore,
                         Status = status
                     });
+
+                    // إضافة التوصية الخاصة بالفئة المتأثرة بناءً على اسمها
+                    if (status == "Needs Support")
+                    {
+                        switch (categoryName)
+                        {
+                            case "Communication":
+                                testRecommendations.Add("Consult a certified Speech-Language Pathologist (SLP) for a comprehensive communication assessment.");
+                                break;
+
+                            case "Social Skills":
+                                testRecommendations.Add("Enroll the child in a structured social skills group or look into Early Intensive Behavioral Intervention (EIBI).");
+                                break;
+
+                            case "Motor Skills":
+                                testRecommendations.Add("Seek an urgent evaluation from a Pediatric Occupational Therapist (OT) or Physical Therapist (PT).");
+                                break;
+
+                            case "Cognitive Skills":
+                                testRecommendations.Add("Incorporate highly structured, repetitive cognitive exercises focusing on one basic concept at a time.");
+                                break;
+
+                            case "Daily Living":
+                                testRecommendations.Add("Implement visual step charts in the bathroom and kitchen to guide the child through daily self-care steps.");
+                                break;
+                        }
+                    }
                 }
             }
 
@@ -127,7 +155,8 @@ namespace Core.Features.AbilitiesTracker.Commands
             {
                 RiskLevel = riskLevel,
                 TotalPercentage = totalPercentage,
-                ObservedBehaviors = observedBehaviors
+                ObservedBehaviors = observedBehaviors,
+                Recommendations = testRecommendations
             };
 
             return new Response<TestResultResponseDto>
