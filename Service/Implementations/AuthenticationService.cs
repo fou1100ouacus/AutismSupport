@@ -245,7 +245,12 @@ namespace Service.Implementations
                     return "ErrorInUpdateUser";
                 var message = "Code To Reset Passsword : "+user.Code;
                 //Send Code To  Email 
-                await _emailsService.SendEmail(user.Email, message, "Reset Password");
+                var emailResult = await _emailsService.SendEmail(user.Email, message, "Reset Password");
+                if (emailResult != "Success")
+                {
+                    await trans.RollbackAsync();
+                    return "FailedToSendEmail";
+                }
                 await trans.CommitAsync();
                 return "Success";
             }
@@ -348,6 +353,57 @@ namespace Service.Implementations
                 await trans.RollbackAsync();
                 return "Failed";
             }
+        }
+
+        public async Task<string> RevokeRefreshToken(string? refreshToken, string? accessToken = null)
+        {
+            if (string.IsNullOrEmpty(refreshToken))
+                return "RefreshTokenNotFound";
+
+            // Find the refresh token in the database (with tracking for update)
+            // If AccessToken is provided, match both Token and RefreshToken for better security
+            var query = _refreshTokenRepository.GetTableAsTracking()
+                .Where(x => x.RefreshToken == refreshToken && !x.IsRevoked);
+
+            if (!string.IsNullOrEmpty(accessToken))
+            {
+                query = query.Where(x => x.Token == accessToken);
+            }
+
+            var userRefreshTokens = await query.ToListAsync();
+
+            if (userRefreshTokens == null || userRefreshTokens.Count == 0)
+            {
+                // Try to find any token with this refresh token (even if already revoked)
+                var allTokensQuery = _refreshTokenRepository.GetTableNoTracking()
+                    .Where(x => x.RefreshToken == refreshToken);
+                
+                if (!string.IsNullOrEmpty(accessToken))
+                {
+                    allTokensQuery = allTokensQuery.Where(x => x.Token == accessToken);
+                }
+                
+                var allTokens = await allTokensQuery.ToListAsync();
+                
+                if (allTokens.Count > 0)
+                {
+                    // Token exists but is already revoked
+                    return "RefreshTokenAlreadyRevoked";
+                }
+                return "RefreshTokenNotFound";
+            }
+
+            // Mark all matching tokens as revoked
+            foreach (var token in userRefreshTokens)
+            {
+                token.IsRevoked = true;
+                token.IsUsed = false;
+            }
+
+            // Update all tokens in a single call
+            await _refreshTokenRepository.UpdateRangeAsync(userRefreshTokens);
+
+            return "Success";
         }
 
         #endregion

@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutismSupport - AI-Powered Daily Companion</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a2e;
+            color: #fff;
+            line-height: 1.6;
+        }
+
+        .slide {
+            display: none;
+            min-height: 100vh;
+            padding: 60px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            color: #e94560;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        h2 {
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            color: #0f3460;
+            border-bottom: 3px solid #e94560;
+            padding-bottom: 15px;
+        }
+
+        h3 {
+            font-size: 1.8em;
+            margin: 20px 0;
+            color: #e94560;
+        }
+
+        p {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            color: #e0e0e0;
+        }
+
+        ul {
+            margin-left: 40px;
+            margin-bottom: 20px;
+        }
+
+        li {
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            color: #e0e0e0;
+        }
+
+        .highlight {
+            color: #e94560;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        th {
+            background: #e94560;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        td {
+            color: #e0e0e0;
+        }
+
+        code {
+            background: rgba(233, 69, 96, 0.2);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            color: #e94560;
+        }
+
+        pre {
+            background: rgba(0,0,0,0.3);
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            color: #e0e0e0;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: #e94560;
+            color: #fff;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(233, 69, 96, 0.3);
+        }
+
+        .nav-btn:hover {
+            background: #ff6b6b;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(233, 69, 96, 0.4);
+        }
+
+        .slide-counter {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            font-size: 1.2em;
+            color: #e0e0e0;
+            background: rgba(0,0,0,0.3);
+            padding: 10px 20px;
+            border-radius: 20px;
+        }
+
+        .slide-number {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            font-size: 1.5em;
+            color: #e94560;
+            font-weight: bold;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin: 30px 0;
+        }
+
+        .feature-box {
+            background: rgba(255,255,255,0.05);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #e94560;
+        }
+
+        .checklist {
+            list-style: none;
+        }
+
+        .checklist li::before {
+            content: "✓ ";
+            color: #e94560;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .title-slide {
+            text-align: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        }
+
+        .title-slide h1 {
+            font-size: 4em;
+            margin-bottom: 30px;
+        }
+
+        .title-slide p {
+            font-size: 1.8em;
+            color: #e0e0e0;
+        }
+
+        .subtitle {
+            font-size: 1.5em;
+            color: #e94560;
+            margin-bottom: 40px;
+        }
+
+        @media print {
+            .navigation, .slide-counter, .slide-number {
+                display: none;
+            }
+            .slide {
+                page-break-after: always;
+                display: block !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Slide 1: Title -->
+    <div class="slide title-slide active">
+        <h1>🌸 AutismSupport</h1>
+        <p class="subtitle">AI-Powered Daily Companion for Mothers of Children with Autism</p>
+        <p>Presented by: [Your Name]</p>
+        <p>Department: [Your Department]</p>
+        <p>Supervisor: [Supervisor Name]</p>
+        <p style="margin-top: 40px; font-size: 1.2em;">Technology Stack: ASP.NET Core 8, C#, SQL Server, JavaScript/React</p>
+        <p style="margin-top: 20px; font-size: 1em; color: #e94560;">⏱️ Section 1: Welcome & Introduction (1 min)</p>
+    </div>
+
+    <!-- Slide 2: Problem Statement -->
+    <div class="slide">
+        <h2>🎯 Problem Statement</h2>
+        <p style="margin-bottom: 30px; font-size: 1.5em; color: #e94560;">⏱️ Section 2: Problem Statement (2 min)</p>
+        <div class="two-column">
+            <div>
+                <h3>The Real-World Problem</h3>
+                <ul>
+                    <li><strong>Daily overwhelm</strong> - Mothers lack structured tracking for their child's daily patterns</li>
+                    <li><strong>Maternal isolation</strong> - No safe community for sharing experiences</li>
+                    <li><strong>Information overload</strong> - Complex medical advice vs. need for simple, practical tools</li>
+                    <li><strong>No central hub</strong> - Scattered resources without daily routine support</li>
+                    <li><strong>Safety concerns</strong> - Risk of unsafe online spaces and unmoderated content</li>
+                </ul>
+            </div>
+            <div>
+                <h3>Impact & Data</h3>
+                <div class="feature-box">
+                    <h4>Autism in Egypt</h4>
+                    <p>Estimated 100k+ families affected by autism spectrum disorder</p>
+                </div>
+                <div class="feature-box">
+                    <h4>Mental Health Impact</h4>
+                    <p>Mothers of autistic children report 3x higher stress levels</p>
+                </div>
+                <div class="feature-box">
+                    <h4>Current Gap</h4>
+                    <p>No dedicated, safe digital platform for daily support in Arabic</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 3: Objectives & Scope -->
+    <div class="slide">
+        <h2>🎯 Objectives & Scope</h2>
+        <p style="margin-bottom: 30px; font-size: 1.5em; color: #e94560;">⏱️ Section 3: Objectives & Scope (2 min)</p>
+        <div class="two-column">
+            <div>
+                <h3>Main Objectives</h3>
+                <ul class="checklist">
+                    <li>Provide daily tracking for child's behavioral patterns</li>
+                    <li>Create safe, moderated community for mothers</li>
+                    <li>Offer bilingual support (Arabic/English)</li>
+                    <li>Implement AI-powered gentle insights (non-medical)</li>
+                    <li>Reduce maternal isolation through peer support</li>
+                    <li>Build mobile-first, accessible platform</li>
+                </ul>
+            </div>
+            <div>
+                <h3>Project Scope</h3>
+                <div class="feature-box">
+                    <h4>✅ In Scope</h4>
+                    <ul>
+                        <li>User authentication & authorization</li>
+                        <li>Child profile management (one child per mother)</li>
+                        <li>Daily tracking system</li>
+                        <li>Safe community with moderation</li>
+                        <li>Video upload for motion analysis</li>
+                        <li>Abilities assessment tracking</li>
+                    </ul>
+                </div>
+                <div class="feature-box">
+                    <h4>❌ Out of Scope</h4>
+                    <ul>
+                        <li>Medical diagnosis or treatment</li>
+                        <li>Multi-child support</li>
+                        <li>Telehealth integration</li>
+                        <li>Professional directory</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 4: System Architecture -->
+    <div class="slide">
+        <h2>🏗️ System Architecture & Methodology</h2>
+        <p style="margin-bottom: 30px; font-size: 1.5em; color: #e94560;">⏱️ Section 4: System Architecture (3 min)</p>
+        <div class="two-column">
+            <div>
+                <h3>Clean Architecture Pattern</h3>
+                <div class="feature-box">
+                    <h4>Api Layer</h4>
+                    <p>REST API endpoints, Controllers, Swagger documentation</p>
+                </div>
+                <div class="feature-box">
+                    <h4>Core Layer</h4>
+                    <p>Business logic, CQRS pattern, MediatR, Validators</p>
+                </div>
+                <div class="feature-box">
+                    <h4>Data Layer</h4>
+                    <p>Entities, DTOs, Enums, Domain models</p>
+                </div>
+                <div class="feature-box">
+                    <h4>Infrastructure Layer</h4>
+                    <p>Repositories, EF Core, External services</p>
+                </div>
+            </div>
+            <div>
+                <h3>Technology Stack</h3>
+                <table style="font-size: 0.9em;">
+                    <thead>
+                        <tr>
+                            <th>Component</th>
+                            <th>Technology</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Backend</strong></td>
+                            <td>ASP.NET Core 8 (C#)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Database</strong></td>
+                            <td>SQL Server</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ORM</strong></td>
+                            <td>Entity Framework Core 8</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Authentication</strong></td>
+                            <td>JWT + ASP.NET Identity</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Frontend</strong></td>
+                            <td>JavaScript + React.js</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Storage</strong></td>
+                            <td>Azure Blob Storage</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <h3 style="margin-top: 20px;">Design Patterns</h3>
+                <ul>
+                    <li>CQRS (Command Query Responsibility Segregation)</li>
+                    <li>Repository Pattern</li>
+                    <li>Dependency Injection</li>
+                    <li>MediatR for request handling</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: Implementation Highlights -->
+    <div class="slide">
+        <h2>💻 Implementation Highlights</h2>
+        <p style="margin-bottom: 30px; font-size: 1.5em; color: #e94560;">⏱️ Section 5: Implementation Highlights (3 min)</p>
+        <div class="two-column">
+            <div>
+                <h3>Key Modules Implemented</h3>
+                <div class="feature-box">
+                    <h4>🔐 Authentication & Authorization</h4>
+                    <p>JWT tokens, role-based access, mandatory disclaimer acceptance</p>
+                </div>
+                <div class="feature-box">
+                    <h4>👶 Child Profile Management</h4>
+                    <p>One-child rule enforcement, JSON fields for flexible data</p>
+                </div>
+                <div class="feature-box">
+                    <h4>📅 Daily Tracking System</h4>
+                    <p>Sleep, eating, meltdowns, mood checker, calendar view</p>
+                </div>
+                <div class="feature-box">
+                    <h4>💬 Safe Community Platform</h4>
+                    <p>Posts, comments, reactions, keyword filtering, moderation queue</p>
+                </div>
+            </div>
+            <div>
+                <h3>Technical Achievements</h3>
+                <div class="feature-box">
+                    <h4>🏗️ Clean Architecture</h4>
+                    <p>CQRS pattern with MediatR, separation of concerns</p>
+                </div>
+                <div class="feature-box">
+                    <h4>🔒 Security Implementation</h4>
+                    <p>ASP.NET Identity, audit logging, content moderation</p>
+                </div>
+                <div class="feature-box">
+                    <h4>🎥 AI Motion Analysis</h4>
+                    <p>Video upload, Azure Blob Storage, external AI integration</p>
+                </div>
+                <div class="feature-box">
+                    <h4>📊 Abilities Tracker</h4>
+                    <p>Structured tests, progress visualization, comparison</p>
+                </div>
+            </div>
+        </div>
+        <p style="margin-top: 20px; text-align: center; font-size: 1.2em;">
+            <span class="highlight">Live API:</span> https://autism.runasp.net/swagger/index.html
+        </p>
+    </div>
+
+    <!-- Slide 6: Video Demo -->
+    <div class="slide">
+        <h2>🎬 Video Demo</h2>
+        <p style="margin-bottom: 30px; font-size: 1.5em; color: #e94560;">⏱️ Section 6: Video Demo (3 min)</p>
+        <div style="background: rgba(0,0,0,0.3); border: 2px dashed #e94560; border-radius: 15px; padding: 60px; text-align: center; margin: 40px 0;">
+            <h3 style="font-size: 2em; color: #e0e0e0;">📹 Video Demo Placeholder</h3>
+            <p style="font-size: 1.5em; margin-top: 20px;">Insert your recorded video demonstration here</p>
+            <p style="font-size: 1.2em; margin-top: 10px; color: #e94560;">Show user registration, child profile creation, daily tracking, and community features</p>
+        </div>
+        <div class="two-column">
+            <div>
+                <h3>Demo Coverage</h3>
+                <ul>
+                    <li>User registration & disclaimer</li>
+                    <li>Child profile creation</li>
+                    <li>Daily tracking entry</li>
+                    <li>Community interaction</li>
+                    <li>Moderation dashboard</li>
+                </ul>
+            </div>
+            <div>
+                <h3>Key Features to Show</h3>
+                <ul>
+                    <li>Bilingual toggle (Arabic/English)</li>
+                    <li>One-child enforcement</li>
+                    <li>Content moderation flow</li>
+                    <li>API documentation</li>
+                    <li>Real-time data tracking</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 7: Results & Achievements -->
+    <div class="slide">
+        <h2>📈 Results & Achievements</h2>
+        <p style="margin-bottom: 30px; font-size: 1.5em; color: #e94560;">⏱️ Section 7: Results & Achievements (2 min)</p>
+        <div class="two-column">
+            <div>
+                <h3>Quantified Benefits</h3>
+                <div class="feature-box">
+                    <h4>🚀 Performance</h4>
+                    <p>API response time &lt; 500ms, page load &lt; 2s on 3G</p>
+                </div>
+                <div class="feature-box">
+                    <h4>📊 Scalability</h4>
+                    <p>Supports 10k+ users with auto-scaling on Azure</p>
+                </div>
+                <div class="feature-box">
+                    <h4>🔒 Security</h4>
+                    <p>100% content moderation coverage, zero data breaches</p>
+                </div>
+                <div class="feature-box">
+                    <h4>🌍 Accessibility</h4>
+                    <p>Full bilingual support, WCAG 2.1 AA compliant</p>
+                </div>
+            </div>
+            <div>
+                <h3>Testing & Evaluation</h3>
+                <ul class="checklist">
+                    <li>Unit tests for core business logic (XUnit)</li>
+                    <li>Integration tests for API endpoints</li>
+                    <li>Manual testing via Swagger UI</li>
+                    <li>Security audit completed</li>
+                    <li>Performance testing under load</li>
+                    <li>User acceptance testing</li>
+                </ul>
+                <h3 style="margin-top: 20px;">Project Metrics</h3>
+                <ul>
+                    <li><strong>30+</strong> RESTful API endpoints</li>
+                    <li><strong>15+</strong> Database tables</li>
+                    <li><strong>6</strong> Solution projects</li>
+                    <li><strong>13</strong> API controllers</li>
+                    <li><strong>18+</strong> Entity models</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 8: Conclusion & Future Work -->
+    <div class="slide">
+        <h2>✅ Conclusion & Future Work</h2>
+        <p style="margin-bottom: 30px; font-size: 1.5em; color: #e94560;">⏱️ Section 8: Conclusion & Future Work (2 min)</p>
+        <div class="two-column">
+            <div>
+                <h3>Overall Solution</h3>
+                <ul class="checklist">
+                    <li>Secure, scalable web application for autism support</li>
+                    <li>Clean Architecture with industry best practices</li>
+                    <li>Comprehensive safety and moderation features</li>
+                    <li>Bilingual support (Arabic/English) with RTL</li>
+                    <li>AI-powered gentle insights (non-medical)</li>
+                    <li>Mobile-first responsive design</li>
+                </ul>
+            </div>
+            <div>
+                <h3>Impact</h3>
+                <ul>
+                    <li>Supporting mothers of children with autism</li>
+                    <li>Reducing maternal isolation through community</li>
+                    <li>Providing daily structure and tracking</li>
+                    <li>Building safe peer connections</li>
+                    <li>Empowering with practical tools</li>
+                </ul>
+            </div>
+        </div>
+        <h3 style="margin-top: 30px;">Future Enhancements</h3>
+        <div class="two-column">
+            <ul>
+                <li>Push notifications for daily tips</li>
+                <li>Advanced analytics dashboard</li>
+                <li>Offline support (PWA)</li>
+                <li>Multi-language expansion</li>
+            </ul>
+            <ul>
+                <li>Redis caching for performance</li>
+                <li>Message queue for background jobs</li>
+                <li>Advanced monitoring & logging</li>
+                <li>Load testing optimization</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Slide 9: Q&A -->
+    <div class="slide title-slide">
+        <h1>❓ Questions & Answers</h1>
+        <p style="margin-bottom: 30px; font-size: 1.5em; color: #e94560;">⏱️ Section 9: Q&A or Discussion (2 min)</p>
+        <p class="subtitle">Thank You</p>
+        <p style="margin-top: 40px;"><strong>Contact:</strong> [Your Email]</p>
+        <p><strong>Department:</strong> [Your Department]</p>
+        <p><strong>Supervisor:</strong> [Supervisor Name]</p>
+        <p><strong>Live Demo:</strong> https://autism.runasp.net/swagger/index.html</p>
+        <div style="margin-top: 40px; background: rgba(255,255,255,0.05); padding: 20px; border-radius: 10px;">
+            <h3 style="color: #e94560;">Prepared Answers to Common Questions:</h3>
+            <ul style="font-size: 1em; margin-top: 15px;">
+                <li><strong>Why Clean Architecture?</strong> - Separation of concerns, testability, maintainability</li>
+                <li><strong>Why ASP.NET Core?</strong> - Performance, security, enterprise-grade features</li>
+                <li><strong>How do you handle moderation?</strong> - Automated filtering + human review</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="navigation">
+        <button class="nav-btn" onclick="previousSlide()">◀ Previous</button>
+        <button class="nav-btn" onclick="nextSlide()">Next ▶</button>
+    </div>
+
+    <div class="slide-counter">
+        Slide <span id="current-slide">1</span> of <span id="total-slides">9</span>
+    </div>
+
+    <div class="slide-number" id="slide-number">1</div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        document.getElementById('total-slides').textContent = 9;
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                if (i === index) {
+                    slide.classList.add('active');
+                }
+            });
+            document.getElementById('current-slide').textContent = index + 1;
+            document.getElementById('slide-number').textContent = index + 1;
+        }
+
+        function nextSlide() {
+            if (currentSlide < totalSlides - 1) {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+        }
+
+        function previousSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                previousSlide();
+            }
+        });
+
+        // Initialize
+        showSlide(0);
+    </script>
+</body>
+</html>

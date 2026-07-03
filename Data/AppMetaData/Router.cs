@@ -48,6 +48,7 @@
             public const string SendResetPasswordCode = Prefix+ "/SendResetPasswordCode";
             public const string ConfirmResetPasswordCode = Prefix+ "/ConfirmResetPasswordCode";
             public const string ResetPassword = Prefix+ "/ResetPassword";
+            public const string Logout = Prefix+ "/Logout";
 
         }
         public static class AuthorizationRouting

@@ -25,7 +25,9 @@ namespace Service.Implementations
                 //sending the Message of passwordResetLink
                 using (var client = new SmtpClient())
                 {
-                    await client.ConnectAsync(_emailSettings.Host, _emailSettings.Port, true);
+                    // Use SSL for port 465, or StartTLS for port 587
+                    bool useSsl = _emailSettings.Port == 465;
+                    await client.ConnectAsync(_emailSettings.Host, _emailSettings.Port, useSsl);
                     client.Authenticate(_emailSettings.FromEmail, _emailSettings.Password);
                     var bodybuilder = new BodyBuilder
                     {
@@ -47,7 +49,9 @@ namespace Service.Implementations
             }
             catch (Exception ex)
             {
-                return "Failed";
+                // Log the exception for debugging
+                Console.WriteLine($"Email sending failed: {ex.Message}");
+                return $"Failed: {ex.Message}";
             }
         }
         #endregion

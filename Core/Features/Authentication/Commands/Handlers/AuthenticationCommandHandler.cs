@@ -31,7 +31,9 @@ namespace Core.Features.Authentication.Commands.Handlers
 
       IRequestHandler<SendResetPasswordCommand, Response<string>>,
 
-      IRequestHandler<ResetPasswordCommand, Response<string>>
+      IRequestHandler<ResetPasswordCommand, Response<string>>,
+
+      IRequestHandler<LogoutCommand, Response<string>>
 
     {
 
@@ -192,6 +194,7 @@ namespace Core.Features.Authentication.Commands.Handlers
 
                 case "Failed": return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.TryAgainInAnotherTime]);
 
+                case "FailedToSendEmail": return BadRequest<string>("Failed to send email. Please check email configuration.");
                 case "Success": return Success<string>("");
 
                 default: return BadRequest<string>(_stringLocalizer[SharedResourcesKeys.TryAgainInAnotherTime]);
@@ -217,6 +220,19 @@ namespace Core.Features.Authentication.Commands.Handlers
                 case "Failed": return BadRequest<string>("Failed to reset password");
                 case "Success": return Success<string>("Password reset successfully");
                 default: return BadRequest<string>("Failed to reset password");
+            }
+        }
+
+        public async Task<Response<string>> Handle(LogoutCommand request, CancellationToken cancellationToken)
+        {
+            var result = await _authenticationService.RevokeRefreshToken(request.RefreshToken, request.AccessToken);
+
+            switch (result)
+            {
+                case "RefreshTokenNotFound": return BadRequest<string>("Refresh token not found");
+                case "RefreshTokenAlreadyRevoked": return BadRequest<string>("Refresh token already revoked");
+                case "Success": return Success<string>("Logged out successfully");
+                default: return BadRequest<string>("Failed to logout");
             }
         }
 

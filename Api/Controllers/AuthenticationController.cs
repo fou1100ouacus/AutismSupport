@@ -55,5 +55,12 @@ namespace Api.Controllers
             var response = await Mediator.Send(command);
             return NewResult(response);
         }
+
+        [HttpPost(Router.Authentication.Logout)]
+        public async Task<IActionResult> Logout([FromForm] LogoutCommand command)
+        {
+            var response = await Mediator.Send(command);
+            return NewResult(response);
+        }
     }
 }
